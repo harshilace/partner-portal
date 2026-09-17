@@ -5,6 +5,7 @@ namespace App\Domain\Customers;
 use App\Domain\Authentication\User;
 use App\Domain\Partners\Partner;
 use App\Domain\Referrals\ReferralCode;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -31,6 +32,16 @@ class CustomerPartnerAttribution extends Model
             'starts_at' => 'datetime',
             'ends_at' => 'datetime',
         ];
+    }
+
+    public function isOpen(): bool
+    {
+        return $this->ends_at === null;
+    }
+
+    public function scopeOpen(Builder $query): Builder
+    {
+        return $query->whereNull('ends_at');
     }
 
     public function customer(): BelongsTo

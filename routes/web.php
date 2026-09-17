@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Customers\CustomerController;
 use App\Http\Controllers\Leads\LeadController;
 use App\Http\Controllers\Leads\LeadFollowUpController;
 use App\Http\Controllers\Partners\PartnerController;
@@ -55,4 +56,9 @@ Route::middleware(['auth', 'active'])->group(function () {
     // Lead Follow-Ups
     Route::post('/leads/{lead}/follow-ups', [LeadFollowUpController::class, 'store'])->name('leads.follow-ups.store');
     Route::put('/leads/{lead}/follow-ups/{followUp}', [LeadFollowUpController::class, 'update'])->name('leads.follow-ups.update');
+
+    // Customer Management
+    Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
+    Route::get('/customers/{customer}', [CustomerController::class, 'show'])->name('customers.show');
+    Route::put('/customers/{customer}/mapping', [CustomerController::class, 'updateMapping'])->name('customers.mapping.update');
 });

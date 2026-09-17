@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
+use App\Domain\Customers\Customer;
 use App\Domain\Leads\Lead;
 use App\Domain\Partners\Partner;
 use App\Domain\Referrals\ReferralCode;
 use App\Domain\Subscriptions\Subscription;
+use App\Policies\CustomerPolicy;
 use App\Policies\LeadPolicy;
 use App\Policies\PartnerPolicy;
 use App\Policies\ReferralCodePolicy;
@@ -32,5 +34,6 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Subscription::class, SubscriptionPolicy::class);
         Gate::policy(Lead::class, LeadPolicy::class);
         Gate::policy(ReferralCode::class, ReferralCodePolicy::class);
+        Gate::policy(Customer::class, CustomerPolicy::class);
     }
 }
