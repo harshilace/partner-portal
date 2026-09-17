@@ -39,8 +39,16 @@ class PartnerPolicy
 
         // Main Partner can view their own sub-partners
         if ($user->isMainPartner()) {
-            if ($partner->parent_partner_id === $currentPartner->id) {
+            if ((int) $partner->parent_partner_id === (int) $currentPartner->id) {
                 return true;
+            }
+
+            if ($currentPartner->relationLoaded('subPartners')) {
+                return $currentPartner->subPartners->contains('id', $partner->id);
+            }
+
+            if (! $currentPartner->exists) {
+                return false;
             }
 
             return $currentPartner->subPartners()->where('id', $partner->id)->exists();
@@ -94,8 +102,28 @@ class PartnerPolicy
     }
 
     /**
+     * Determine whether the user can view any partner records.
+     * List scoping is enforced server-side via TenantContext.
+     */
+    public function viewAny(User $user): bool
+    {
+        return $user->isMainPartner() || $user->isSubPartner();
+    }
+
+    /**
+     * Determine whether the user can deactivate the partner.
+     * Admin is handled via before().
+     * Main Partner deactivation authority is blocked pending confirmation (NEEDS BUSINESS CONFIRMATION #8).
+     * Sub-Partner is strictly denied.
+     */
+    public function deactivate(User $user, Partner $partner): bool
+    {
+        return false;
+    }
+
+    /**
      * Determine whether the user can delete the partner.
-     * Exclusive to Admin.
+     * Partner records must never be deleted (Section 4, 12).
      */
     public function delete(User $user, Partner $partner): bool
     {
