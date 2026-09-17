@@ -3,6 +3,7 @@
 namespace App\Domain\Authentication;
 
 use App\Domain\Audit\AuditLog;
+use App\Domain\Authentication\Enums\Role;
 use App\Domain\Partners\Partner;
 use App\Domain\Partners\PartnerUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -51,5 +52,68 @@ class User extends Authenticatable
     public function auditLogs(): HasMany
     {
         return $this->hasMany(AuditLog::class);
+    }
+
+    public function isAdmin(): bool
+    {
+        $roleValue = $this->role instanceof Role
+            ? $this->role->value
+            : $this->role;
+
+        return $roleValue === Role::ADMIN->value;
+    }
+
+    public function isMainPartner(): bool
+    {
+        $roleValue = $this->role instanceof Role
+            ? $this->role->value
+            : $this->role;
+
+        if ($roleValue === Role::MAIN_PARTNER->value) {
+            return true;
+        }
+
+        if ($roleValue === Role::ADMIN->value ||
+            $roleValue === Role::SUB_PARTNER->value) {
+            return false;
+        }
+
+        return $this->partner()?->type === 'main';
+    }
+
+    public function isSubPartner(): bool
+    {
+        $roleValue = $this->role instanceof Role
+            ? $this->role->value
+            : $this->role;
+
+        if ($roleValue === Role::SUB_PARTNER->value) {
+            return true;
+        }
+
+        if ($roleValue === Role::ADMIN->value ||
+            $roleValue === Role::MAIN_PARTNER->value) {
+            return false;
+        }
+
+        return $this->partner()?->type === 'sub';
+    }
+
+    public function partner(): ?Partner
+    {
+        if ($this->relationLoaded('partners')) {
+            return $this->partners->first();
+        }
+
+        if (! $this->exists) {
+            return null;
+        }
+
+        return $this->partners()->first();
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === 'active';
     }
 }
