@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Customers\CustomerController;
+use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Leads\LeadController;
 use App\Http\Controllers\Leads\LeadFollowUpController;
 use App\Http\Controllers\Partners\PartnerController;
@@ -31,6 +32,9 @@ Route::get('/register', [RegistrationController::class, 'show'])->name('register
 Route::post('/register', [RegistrationController::class, 'store'])->name('register.store');
 
 Route::middleware(['auth', 'active'])->group(function () {
+    // Role-Aware Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
     // Partner Management
     Route::get('/partners', [PartnerController::class, 'index'])->name('partners.index');
     Route::post('/partners', [PartnerController::class, 'store'])->name('partners.store');

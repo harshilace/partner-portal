@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Domain\Authentication\User;
 use App\Domain\Customers\Customer;
 use App\Domain\Leads\Lead;
 use App\Domain\Partners\Partner;
@@ -42,6 +43,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        config()->set('inertia.pages.paths', [resource_path('js/Pages'), resource_path('js/pages')]);
+
         Gate::policy(Partner::class, PartnerPolicy::class);
         Gate::policy(Subscription::class, SubscriptionPolicy::class);
         Gate::policy(Lead::class, LeadPolicy::class);
@@ -52,5 +55,25 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Order::class, OrderPolicy::class);
         Gate::policy(AutoDebitMandate::class, AutoDebitMandatePolicy::class);
         Gate::policy(Renewal::class, RenewalPolicy::class);
+
+        Gate::define('viewDashboard', function (User $user): bool {
+            if (! $user->isActive()) {
+                return false;
+            }
+
+            if ($user->isAdmin()) {
+                return true;
+            }
+
+            if ($user->isMainPartner()) {
+                return $user->partner() !== null;
+            }
+
+            if ($user->isSubPartner()) {
+                return $user->partner() !== null;
+            }
+
+            return false;
+        });
     }
 }
