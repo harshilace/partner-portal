@@ -36,6 +36,11 @@ class Lead extends Model
         ];
     }
 
+    public function isConverted(): bool
+    {
+        return $this->status === 'converted';
+    }
+
     public function partner(): BelongsTo
     {
         return $this->belongsTo(Partner::class);

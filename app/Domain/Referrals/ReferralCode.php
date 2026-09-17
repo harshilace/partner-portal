@@ -4,6 +4,7 @@ namespace App\Domain\Referrals;
 
 use App\Domain\Customers\CustomerPartnerAttribution;
 use App\Domain\Partners\Partner;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -27,6 +28,16 @@ class ReferralCode extends Model
         return [
             'is_active' => 'boolean',
         ];
+    }
+
+    public function isActive(): bool
+    {
+        return (bool) $this->is_active;
+    }
+
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('is_active', true);
     }
 
     public function partner(): BelongsTo

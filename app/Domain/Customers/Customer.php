@@ -2,6 +2,7 @@
 
 namespace App\Domain\Customers;
 
+use App\Domain\Leads\Lead;
 use App\Domain\Partners\Partner;
 use App\Domain\Payments\Order;
 use App\Domain\Payments\Payment;
@@ -30,6 +31,21 @@ class Customer extends Model
         'status',
     ];
 
+    public function isActive(): bool
+    {
+        return $this->status === 'active';
+    }
+
+    public static function normalizeEmail(?string $email): ?string
+    {
+        return $email !== null ? strtolower(trim($email)) : null;
+    }
+
+    public static function normalizeMobile(?string $mobile): ?string
+    {
+        return $mobile !== null ? preg_replace('/\D/', '', $mobile) : null;
+    }
+
     public function currentPartner(): BelongsTo
     {
         return $this->belongsTo(Partner::class, 'current_partner_id');
@@ -43,6 +59,11 @@ class Customer extends Model
     public function attributions(): HasMany
     {
         return $this->hasMany(CustomerPartnerAttribution::class);
+    }
+
+    public function leads(): HasMany
+    {
+        return $this->hasMany(Lead::class);
     }
 
     public function orders(): HasMany
