@@ -37,4 +37,27 @@ class Notification extends Model
     {
         return $this->morphTo();
     }
+
+    public function markAsRead(): void
+    {
+        $this->forceFill(['read_at' => $this->freshTimestamp()]);
+
+        if ($this->exists) {
+            $this->save();
+        }
+    }
+
+    public function markAsUnread(): void
+    {
+        $this->forceFill(['read_at' => null]);
+
+        if ($this->exists) {
+            $this->save();
+        }
+    }
+
+    public function isRead(): bool
+    {
+        return $this->read_at !== null;
+    }
 }

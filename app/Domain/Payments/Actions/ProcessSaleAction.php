@@ -14,6 +14,8 @@ use App\Domain\Payments\PaymentTransaction;
 use App\Domain\Products\ProductPlan;
 use App\Domain\Subscriptions\Subscription;
 use App\Domain\Subscriptions\SubscriptionStatusHistory;
+use App\Events\PaymentReceived;
+use App\Events\SaleCompleted;
 use DomainException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -84,7 +86,7 @@ class ProcessSaleAction
         $unitPrice = (float) $plan->price;
         $totalAmount = $unitPrice * $quantity;
 
-        return $this->runInTransaction(function () use ($customer, $product, $plan, $lead, $partnerId, $subPartnerId, $quantity, $unitPrice, $totalAmount, $payload, $actor) {
+        $result = $this->runInTransaction(function () use ($customer, $product, $plan, $lead, $partnerId, $subPartnerId, $quantity, $unitPrice, $totalAmount, $payload, $actor) {
             // Step 1: Payment via abstraction (Section 17)
             $paymentResult = $this->paymentGateway->charge(
                 $customer,
@@ -178,6 +180,11 @@ class ProcessSaleAction
                 'subscription' => $subscription,
             ];
         });
+
+        event(new SaleCompleted($result['order'], $actor));
+        event(new PaymentReceived($result['payment'], $actor));
+
+        return $result;
     }
 
     protected function runInTransaction(callable $callback): mixed

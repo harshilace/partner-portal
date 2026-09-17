@@ -5,6 +5,7 @@ use App\Http\Controllers\Customers\CustomerController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Leads\LeadController;
 use App\Http\Controllers\Leads\LeadFollowUpController;
+use App\Http\Controllers\Notifications\NotificationController;
 use App\Http\Controllers\Partners\PartnerController;
 use App\Http\Controllers\Partners\PartnerUserController;
 use App\Http\Controllers\Partners\SubPartnerController;
@@ -104,4 +105,9 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::get('/renewals/{renewal}', [RenewalController::class, 'show'])->name('renewals.show');
     Route::post('/renewals/{renewal}/reminder', [RenewalController::class, 'recordReminder'])->name('renewals.reminder');
     Route::post('/renewals/{renewal}/process', [RenewalController::class, 'process'])->name('renewals.process');
+
+    // In-App Notifications
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markRead'])->name('notifications.mark-read');
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
 });

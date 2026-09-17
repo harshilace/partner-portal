@@ -7,6 +7,7 @@ use App\Domain\Authentication\User;
 use App\Domain\Subscriptions\AutoDebitEvent;
 use App\Domain\Subscriptions\AutoDebitMandate;
 use App\Domain\Subscriptions\Subscription;
+use App\Events\AutoDebitStopped;
 use DomainException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -26,7 +27,7 @@ class StopAutoDebitAction
             throw new DomainException('Auto-debit mandate is already stopped.');
         }
 
-        return $this->runInTransaction(function () use ($mandate, $reason, $actor) {
+        $mandate = $this->runInTransaction(function () use ($mandate, $reason, $actor) {
             $fromStatus = $mandate->status;
             $toStatus = 'stopped';
             $now = Carbon::now();
@@ -70,6 +71,10 @@ class StopAutoDebitAction
 
             return $mandate;
         });
+
+        event(new AutoDebitStopped($mandate, $actor));
+
+        return $mandate;
     }
 
     protected function updateMandate(AutoDebitMandate $mandate, array $attributes): void

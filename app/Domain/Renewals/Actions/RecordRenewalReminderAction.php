@@ -5,6 +5,7 @@ namespace App\Domain\Renewals\Actions;
 use App\Domain\Audit\Services\AuditLogger;
 use App\Domain\Authentication\User;
 use App\Domain\Renewals\Renewal;
+use App\Events\RenewalDue;
 use DomainException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -32,7 +33,7 @@ class RecordRenewalReminderAction
             throw new DomainException("Renewal reminder [{$milestone}] has already been recorded.");
         }
 
-        return $this->runInTransaction(function () use ($renewal, $column, $milestone, $actor) {
+        $renewal = $this->runInTransaction(function () use ($renewal, $column, $milestone, $actor) {
             $now = Carbon::now();
 
             $this->updateRenewal($renewal, [
@@ -52,6 +53,10 @@ class RecordRenewalReminderAction
 
             return $renewal;
         });
+
+        event(new RenewalDue($renewal, $milestone, $actor));
+
+        return $renewal;
     }
 
     protected function updateRenewal(Renewal $renewal, array $attributes): void
