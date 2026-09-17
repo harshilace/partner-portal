@@ -11,7 +11,10 @@ use App\Domain\Payments\Services\NullPaymentGateway;
 use App\Domain\Products\Product;
 use App\Domain\Products\ProductPlan;
 use App\Domain\Referrals\ReferralCode;
+use App\Domain\Renewals\Renewal;
+use App\Domain\Subscriptions\AutoDebitMandate;
 use App\Domain\Subscriptions\Subscription;
+use App\Policies\AutoDebitMandatePolicy;
 use App\Policies\CustomerPolicy;
 use App\Policies\LeadPolicy;
 use App\Policies\OrderPolicy;
@@ -19,6 +22,7 @@ use App\Policies\PartnerPolicy;
 use App\Policies\ProductPlanPolicy;
 use App\Policies\ProductPolicy;
 use App\Policies\ReferralCodePolicy;
+use App\Policies\RenewalPolicy;
 use App\Policies\SubscriptionPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -46,5 +50,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Product::class, ProductPolicy::class);
         Gate::policy(ProductPlan::class, ProductPlanPolicy::class);
         Gate::policy(Order::class, OrderPolicy::class);
+        Gate::policy(AutoDebitMandate::class, AutoDebitMandatePolicy::class);
+        Gate::policy(Renewal::class, RenewalPolicy::class);
     }
 }

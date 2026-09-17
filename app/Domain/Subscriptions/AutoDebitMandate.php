@@ -32,6 +32,16 @@ class AutoDebitMandate extends Model
         ];
     }
 
+    public function isActive(): bool
+    {
+        return $this->status === 'active';
+    }
+
+    public function isStopped(): bool
+    {
+        return $this->status === 'stopped';
+    }
+
     public function subscription(): BelongsTo
     {
         return $this->belongsTo(Subscription::class);

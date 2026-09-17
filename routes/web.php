@@ -11,8 +11,10 @@ use App\Http\Controllers\Products\ProductController;
 use App\Http\Controllers\Products\ProductPlanController;
 use App\Http\Controllers\ReferralCodes\ReferralCodeController;
 use App\Http\Controllers\Register\RegistrationController;
+use App\Http\Controllers\Renewals\RenewalController;
 use App\Http\Controllers\Sales\OrderController;
 use App\Http\Controllers\Sales\SaleController;
+use App\Http\Controllers\Subscriptions\AutoDebitController;
 use App\Http\Controllers\Subscriptions\SubscriptionController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -87,4 +89,15 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::get('/subscriptions', [SubscriptionController::class, 'index'])->name('subscriptions.index');
     Route::get('/subscriptions/{subscription}', [SubscriptionController::class, 'show'])->name('subscriptions.show');
     Route::post('/subscriptions/{subscription}/cancel', [SubscriptionController::class, 'cancel'])->name('subscriptions.cancel');
+
+    // Auto-Debit Mandates
+    Route::get('/auto-debit-mandates', [AutoDebitController::class, 'index'])->name('auto-debit-mandates.index');
+    Route::get('/auto-debit-mandates/{mandate}', [AutoDebitController::class, 'show'])->name('auto-debit-mandates.show');
+    Route::post('/auto-debit-mandates/{mandate}/stop', [AutoDebitController::class, 'stop'])->name('auto-debit-mandates.stop');
+
+    // Renewals
+    Route::get('/renewals', [RenewalController::class, 'index'])->name('renewals.index');
+    Route::get('/renewals/{renewal}', [RenewalController::class, 'show'])->name('renewals.show');
+    Route::post('/renewals/{renewal}/reminder', [RenewalController::class, 'recordReminder'])->name('renewals.reminder');
+    Route::post('/renewals/{renewal}/process', [RenewalController::class, 'process'])->name('renewals.process');
 });

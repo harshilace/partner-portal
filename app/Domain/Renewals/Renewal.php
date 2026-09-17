@@ -40,6 +40,28 @@ class Renewal extends Model
         ];
     }
 
+    public static function validMilestones(): array
+    {
+        return ['30d', '15d', '7d', '1d'];
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status === 'pending';
+    }
+
+    public function isRenewed(): bool
+    {
+        return $this->status === 'renewed';
+    }
+
+    public function hasReminderSent(string $milestone): bool
+    {
+        $column = "reminder_{$milestone}_sent_at";
+
+        return ! empty($this->{$column});
+    }
+
     public function subscription(): BelongsTo
     {
         return $this->belongsTo(Subscription::class);
