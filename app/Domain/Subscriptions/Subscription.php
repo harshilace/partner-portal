@@ -44,6 +44,16 @@ class Subscription extends Model
         ];
     }
 
+    public function isActive(): bool
+    {
+        return $this->status === 'active';
+    }
+
+    public function isCancelled(): bool
+    {
+        return $this->status === 'cancelled';
+    }
+
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);

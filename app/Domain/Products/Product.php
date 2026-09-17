@@ -28,6 +28,11 @@ class Product extends Model
         ];
     }
 
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
     public function plans(): HasMany
     {
         return $this->hasMany(ProductPlan::class);

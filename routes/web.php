@@ -7,8 +7,13 @@ use App\Http\Controllers\Leads\LeadFollowUpController;
 use App\Http\Controllers\Partners\PartnerController;
 use App\Http\Controllers\Partners\PartnerUserController;
 use App\Http\Controllers\Partners\SubPartnerController;
+use App\Http\Controllers\Products\ProductController;
+use App\Http\Controllers\Products\ProductPlanController;
 use App\Http\Controllers\ReferralCodes\ReferralCodeController;
 use App\Http\Controllers\Register\RegistrationController;
+use App\Http\Controllers\Sales\OrderController;
+use App\Http\Controllers\Sales\SaleController;
+use App\Http\Controllers\Subscriptions\SubscriptionController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -61,4 +66,25 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
     Route::get('/customers/{customer}', [CustomerController::class, 'show'])->name('customers.show');
     Route::put('/customers/{customer}/mapping', [CustomerController::class, 'updateMapping'])->name('customers.mapping.update');
+
+    // Product & Plan Management
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+    Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+    Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+
+    Route::get('/products/{product}/plans', [ProductPlanController::class, 'index'])->name('products.plans.index');
+    Route::post('/products/{product}/plans', [ProductPlanController::class, 'store'])->name('products.plans.store');
+    Route::get('/products/{product}/plans/{plan}', [ProductPlanController::class, 'show'])->name('products.plans.show');
+    Route::put('/products/{product}/plans/{plan}', [ProductPlanController::class, 'update'])->name('products.plans.update');
+
+    // Order & Sales Management
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::post('/sales', [SaleController::class, 'store'])->name('sales.store');
+
+    // Subscription Management
+    Route::get('/subscriptions', [SubscriptionController::class, 'index'])->name('subscriptions.index');
+    Route::get('/subscriptions/{subscription}', [SubscriptionController::class, 'show'])->name('subscriptions.show');
+    Route::post('/subscriptions/{subscription}/cancel', [SubscriptionController::class, 'cancel'])->name('subscriptions.cancel');
 });

@@ -22,6 +22,11 @@ class SubscriptionPolicy
         return null;
     }
 
+    public function viewAny(User $user): bool
+    {
+        return $user->isActive();
+    }
+
     /**
      * Determine whether the user can view the subscription snapshot.
      */
@@ -37,13 +42,8 @@ class SubscriptionPolicy
         }
 
         if ($user->isMainPartner()) {
-            if ((int) $subscription->partner_id === (int) $currentPartner->id) {
-                return true;
-            }
-
-            if ($subscription->sub_partner_id) {
-                return $currentPartner->subPartners()->where('id', $subscription->sub_partner_id)->exists();
-            }
+            // Direct subscriptions only; access to individual Sub-Partner subscriptions is blocked pending business confirmation
+            return (int) $subscription->partner_id === (int) $currentPartner->id && $subscription->sub_partner_id === null;
         }
 
         return false;

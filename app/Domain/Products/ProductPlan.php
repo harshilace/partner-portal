@@ -34,6 +34,11 @@ class ProductPlan extends Model
         ];
     }
 
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
