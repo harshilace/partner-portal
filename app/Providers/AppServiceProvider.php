@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Domain\Audit\AuditEntry;
 use App\Domain\Authentication\User;
 use App\Domain\Customers\Customer;
 use App\Domain\Leads\Lead;
@@ -27,6 +28,7 @@ use App\Events\SaleCompleted;
 use App\Events\SubPartnerCreated;
 use App\Events\SubscriptionCancelled;
 use App\Listeners\SendNotificationListener;
+use App\Policies\AuditPolicy;
 use App\Policies\AutoDebitMandatePolicy;
 use App\Policies\CustomerPolicy;
 use App\Policies\LeadPolicy;
@@ -75,6 +77,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(DatabaseNotification::class, NotificationPolicy::class);
         Gate::policy(Report::class, ReportPolicy::class);
         Gate::policy(ReportPolicy::class, ReportPolicy::class);
+        Gate::policy(AuditEntry::class, AuditPolicy::class);
 
         Event::listen(AutoDebitStopped::class, SendNotificationListener::class);
         Event::listen(SubPartnerCreated::class, SendNotificationListener::class);

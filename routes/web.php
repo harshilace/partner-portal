@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Audit\AuditController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Customers\CustomerController;
 use App\Http\Controllers\Dashboard\DashboardController;
@@ -121,4 +122,7 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::get('/reports/sales/export/{format}', [ReportController::class, 'export'])->name('reports.sales.export')->defaults('report', 'sales');
     Route::get('/reports/customers/export/{format}', [ReportController::class, 'export'])->name('reports.customers.export')->defaults('report', 'customers');
     Route::get('/reports/renewals/export/{format}', [ReportController::class, 'export'])->name('reports.renewals.export')->defaults('report', 'renewals');
+
+    // Audit History — Admin only (temporary security default) until BC-11-01 resolved
+    Route::get('/audit', [AuditController::class, 'index'])->name('audit.index');
 });
