@@ -14,6 +14,7 @@ use App\Http\Controllers\Products\ProductPlanController;
 use App\Http\Controllers\ReferralCodes\ReferralCodeController;
 use App\Http\Controllers\Register\RegistrationController;
 use App\Http\Controllers\Renewals\RenewalController;
+use App\Http\Controllers\Reports\ReportController;
 use App\Http\Controllers\Sales\OrderController;
 use App\Http\Controllers\Sales\SaleController;
 use App\Http\Controllers\Subscriptions\AutoDebitController;
@@ -110,4 +111,14 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markRead'])->name('notifications.mark-read');
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
+
+    // Reports
+    Route::get('/reports/sales', [ReportController::class, 'sales'])->name('reports.sales');
+    Route::get('/reports/customers', [ReportController::class, 'customers'])->name('reports.customers');
+    Route::get('/reports/renewals', [ReportController::class, 'renewals'])->name('reports.renewals');
+
+    // Report Exports — blocked stubs until BC-10-07/08 resolved
+    Route::get('/reports/sales/export/{format}', [ReportController::class, 'export'])->name('reports.sales.export')->defaults('report', 'sales');
+    Route::get('/reports/customers/export/{format}', [ReportController::class, 'export'])->name('reports.customers.export')->defaults('report', 'customers');
+    Route::get('/reports/renewals/export/{format}', [ReportController::class, 'export'])->name('reports.renewals.export')->defaults('report', 'renewals');
 });

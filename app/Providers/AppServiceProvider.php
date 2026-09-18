@@ -14,6 +14,7 @@ use App\Domain\Products\Product;
 use App\Domain\Products\ProductPlan;
 use App\Domain\Referrals\ReferralCode;
 use App\Domain\Renewals\Renewal;
+use App\Domain\Reports\Report;
 use App\Domain\Subscriptions\AutoDebitMandate;
 use App\Domain\Subscriptions\Subscription;
 use App\Events\AutoDebitStopped;
@@ -36,6 +37,7 @@ use App\Policies\ProductPlanPolicy;
 use App\Policies\ProductPolicy;
 use App\Policies\ReferralCodePolicy;
 use App\Policies\RenewalPolicy;
+use App\Policies\ReportPolicy;
 use App\Policies\SubscriptionPolicy;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Event;
@@ -71,6 +73,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Renewal::class, RenewalPolicy::class);
         Gate::policy(Notification::class, NotificationPolicy::class);
         Gate::policy(DatabaseNotification::class, NotificationPolicy::class);
+        Gate::policy(Report::class, ReportPolicy::class);
+        Gate::policy(ReportPolicy::class, ReportPolicy::class);
 
         Event::listen(AutoDebitStopped::class, SendNotificationListener::class);
         Event::listen(SubPartnerCreated::class, SendNotificationListener::class);
