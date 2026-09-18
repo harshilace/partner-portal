@@ -9,9 +9,19 @@ use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class AuthenticatedSessionController extends Controller
 {
+    /**
+     * Display the login view.
+     */
+    public function create(Request $request): Response
+    {
+        return Inertia::render('Auth/Login');
+    }
+
     /**
      * Handle an incoming authentication request.
      */

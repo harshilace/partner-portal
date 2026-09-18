@@ -27,7 +27,8 @@ Route::get('/', function () {
     return Inertia::render('Welcome');
 });
 
-Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login');
+Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login')->middleware('guest');
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login.store');
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
 // Public Registration
