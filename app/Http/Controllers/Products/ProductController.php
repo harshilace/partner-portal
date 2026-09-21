@@ -9,18 +9,27 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Products\StoreProductRequest;
 use App\Http\Requests\Products\UpdateProductRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ProductController extends Controller
 {
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse|Response
     {
         Gate::authorize('viewAny', Product::class);
 
         $products = Product::with('plans')->get();
 
-        return response()->json([
-            'data' => $products,
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
+            return response()->json([
+                'data' => $products,
+            ]);
+        }
+
+        return Inertia::render('Products/Index', [
+            'products' => $products,
         ]);
     }
 

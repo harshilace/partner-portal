@@ -8,19 +8,25 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ReportController extends Controller
 {
     /**
      * Display Sales Report.
      */
-    public function sales(Request $request, ReportService $service): JsonResponse
+    public function sales(Request $request, ReportService $service): JsonResponse|Response
     {
         Gate::authorize('viewAny', Report::class);
 
-        $result = $service->salesReport($request->user(), $request->all());
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
+            $result = $service->salesReport($request->user(), $request->all());
 
-        return response()->json($result, 501);
+            return response()->json($result, 501);
+        }
+
+        return Inertia::render('Reports/Index');
     }
 
     /**

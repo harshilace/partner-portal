@@ -8,16 +8,22 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class AuditController extends Controller
 {
     /**
      * Display audit history.
      */
-    public function index(Request $request, AuditService $service): JsonResponse
+    public function index(Request $request, AuditService $service): JsonResponse|Response
     {
         Gate::authorize('viewAny', AuditEntry::class);
 
-        return $service->index($request->user(), $request->all());
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
+            return $service->index($request->user(), $request->all());
+        }
+
+        return Inertia::render('Audit/Index');
     }
 }

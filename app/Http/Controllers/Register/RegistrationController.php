@@ -6,6 +6,7 @@ use App\Domain\Leads\Actions\RegisterViaReferralAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Register\RegisterRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -34,7 +35,7 @@ class RegistrationController extends Controller
      * Handle public registration via referral code or unassigned.
      * Blocked by unresolved customer_code / existing-customer rules.
      */
-    public function store(RegisterRequest $request, RegisterViaReferralAction $action): JsonResponse
+    public function store(RegisterRequest $request, RegisterViaReferralAction $action): JsonResponse|RedirectResponse
     {
         $partnerCode = $request->input('partner') ?? $request->query('partner');
 
@@ -42,6 +43,10 @@ class RegistrationController extends Controller
             data: $request->validated(),
             referralCode: $partnerCode
         );
+
+        if ($request->header('X-Inertia')) {
+            return redirect()->back()->with('success', 'Registration completed successfully! Our team will contact you shortly.');
+        }
 
         return response()->json([
             'message' => 'Registration completed successfully.',

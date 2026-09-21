@@ -8,11 +8,14 @@ use App\Domain\Renewals\Renewal;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Renewals\RecordReminderRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class RenewalController extends Controller
 {
-    public function index(TenantContext $tenant): JsonResponse
+    public function index(Request $request, TenantContext $tenant): JsonResponse|Response
     {
         Gate::authorize('viewAny', Renewal::class);
 
@@ -33,8 +36,14 @@ class RenewalController extends Controller
 
         $renewals = $query->latest('due_date')->get();
 
-        return response()->json([
-            'data' => $renewals,
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
+            return response()->json([
+                'data' => $renewals,
+            ]);
+        }
+
+        return Inertia::render('Renewals/Index', [
+            'renewals' => $renewals,
         ]);
     }
 

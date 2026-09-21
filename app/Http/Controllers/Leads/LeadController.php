@@ -10,13 +10,15 @@ use App\Http\Requests\Leads\UpdateLeadStatusRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class LeadController extends Controller
 {
     /**
      * Display a listing of leads scoped to the tenant context.
      */
-    public function index(Request $request, TenantContext $tenant): JsonResponse
+    public function index(Request $request, TenantContext $tenant): JsonResponse|Response
     {
         Gate::authorize('viewAny', Lead::class);
 
@@ -24,8 +26,14 @@ class LeadController extends Controller
 
         $leads = $query->with(['partner', 'subPartner', 'customer'])->get();
 
-        return response()->json([
-            'data' => $leads,
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
+            return response()->json([
+                'data' => $leads,
+            ]);
+        }
+
+        return Inertia::render('Leads/Index', [
+            'leads' => $leads,
         ]);
     }
 

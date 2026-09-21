@@ -8,13 +8,15 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class NotificationController extends Controller
 {
     /**
      * Display a listing of the authenticated user's notifications.
      */
-    public function index(Request $request): JsonResponse
+    public function index(Request $request): JsonResponse|Response
     {
         $user = $request->user();
 
@@ -26,8 +28,15 @@ class NotificationController extends Controller
             ? $user->unreadNotifications->count()
             : $user->unreadNotifications()->count();
 
-        return response()->json([
-            'data' => $notifications,
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
+            return response()->json([
+                'data' => $notifications,
+                'unread_count' => $unreadCount,
+            ]);
+        }
+
+        return Inertia::render('Notifications/Index', [
+            'notifications' => $notifications,
             'unread_count' => $unreadCount,
         ]);
     }

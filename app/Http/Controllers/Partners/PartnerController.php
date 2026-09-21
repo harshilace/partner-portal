@@ -6,6 +6,7 @@ use App\Domain\Authentication\Services\TenantContext;
 use App\Domain\Partners\Actions\CreatePartnerAction;
 use App\Domain\Partners\Actions\DeactivatePartnerAction;
 use App\Domain\Partners\Actions\UpdatePartnerAction;
+use App\Domain\Partners\GetPartnersQuery;
 use App\Domain\Partners\Partner;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Partners\CreatePartnerRequest;
@@ -13,32 +14,28 @@ use App\Http\Requests\Partners\UpdatePartnerRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class PartnerController extends Controller
 {
     /**
      * Display a listing of the partners scoped to the tenant context.
      */
-    public function index(Request $request, TenantContext $tenant): JsonResponse
+    public function index(Request $request, TenantContext $tenant, GetPartnersQuery $query): JsonResponse|Response
     {
         Gate::authorize('viewAny', Partner::class);
 
-        if ($tenant->isAdmin()) {
-            $partners = Partner::all();
-        } elseif ($tenant->isMainPartner()) {
-            $mainPartner = $tenant->partner();
-            $partners = Partner::where('id', $mainPartner?->id)
-                ->orWhere('parent_partner_id', $mainPartner?->id)
-                ->get();
-        } elseif ($tenant->isSubPartner()) {
-            $subPartner = $tenant->partner();
-            $partners = Partner::where('id', $subPartner?->id)->get();
-        } else {
-            $partners = collect();
+        $partners = $query->execute($tenant);
+
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
+            return response()->json([
+                'data' => $partners,
+            ]);
         }
 
-        return response()->json([
-            'data' => $partners,
+        return Inertia::render('Partners/Index', [
+            'partners' => $partners,
         ]);
     }
 

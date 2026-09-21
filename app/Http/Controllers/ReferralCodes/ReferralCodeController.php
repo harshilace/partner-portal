@@ -11,20 +11,28 @@ use App\Http\Requests\ReferralCodes\CreateReferralCodeRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ReferralCodeController extends Controller
 {
     /**
      * Display a listing of referral codes.
      */
-    public function index(Request $request): JsonResponse
+    public function index(Request $request): JsonResponse|Response
     {
         Gate::authorize('viewAny', ReferralCode::class);
 
         $referralCodes = ReferralCode::with(['partner', 'subPartner'])->get();
 
-        return response()->json([
-            'data' => $referralCodes,
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
+            return response()->json([
+                'data' => $referralCodes,
+            ]);
+        }
+
+        return Inertia::render('Referrals/Index', [
+            'referral_codes' => $referralCodes,
         ]);
     }
 

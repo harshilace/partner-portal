@@ -11,13 +11,15 @@ use App\Http\Requests\Customers\ChangeCustomerPartnerMappingRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class CustomerController extends Controller
 {
     /**
      * Display a listing of customers scoped to tenant context.
      */
-    public function index(Request $request, TenantContext $tenant): JsonResponse
+    public function index(Request $request, TenantContext $tenant): JsonResponse|Response
     {
         Gate::authorize('viewAny', Customer::class);
 
@@ -38,8 +40,14 @@ class CustomerController extends Controller
 
         $customers = $query->with(['currentPartner', 'currentSubPartner'])->get();
 
-        return response()->json([
-            'data' => $customers,
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
+            return response()->json([
+                'data' => $customers,
+            ]);
+        }
+
+        return Inertia::render('Customers/Index', [
+            'customers' => $customers,
         ]);
     }
 

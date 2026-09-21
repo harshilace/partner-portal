@@ -8,11 +8,14 @@ use App\Domain\Subscriptions\AutoDebitMandate;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Subscriptions\StopAutoDebitRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class AutoDebitController extends Controller
 {
-    public function index(TenantContext $tenant): JsonResponse
+    public function index(Request $request, TenantContext $tenant): JsonResponse|Response
     {
         Gate::authorize('viewAny', AutoDebitMandate::class);
 
@@ -37,8 +40,14 @@ class AutoDebitController extends Controller
 
         $mandates = $query->latest()->get();
 
-        return response()->json([
-            'data' => $mandates,
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
+            return response()->json([
+                'data' => $mandates,
+            ]);
+        }
+
+        return Inertia::render('AutoDebit/Index', [
+            'mandates' => $mandates,
         ]);
     }
 

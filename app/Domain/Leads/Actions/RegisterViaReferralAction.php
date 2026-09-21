@@ -4,8 +4,10 @@ namespace App\Domain\Leads\Actions;
 
 use App\Domain\Audit\Services\AuditLogger;
 use App\Domain\Customers\Customer;
+use App\Domain\Leads\Lead;
 use App\Domain\Referrals\Actions\ResolveReferralCodeAction;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use RuntimeException;
 
 class RegisterViaReferralAction
@@ -36,15 +38,79 @@ class RegisterViaReferralAction
             $existingCustomer = $this->findCustomer($emailNormalized, $mobileNormalized);
 
             if ($existingCustomer) {
-                throw new RuntimeException(
-                    'Behavior when existing customer uses a referral link is not confirmed — NEEDS BUSINESS CONFIRMATION #9 / #10'
-                );
+                // Existing customer clicks another referral: Keep existing Partner
+                $lead = Lead::create([
+                    'name' => $data['name'] ?? $existingCustomer->name,
+                    'email' => $data['email'] ?? $existingCustomer->email,
+                    'email_normalized' => $emailNormalized,
+                    'mobile' => $data['mobile'] ?? $existingCustomer->mobile,
+                    'mobile_normalized' => $mobileNormalized,
+                    'partner_id' => $existingCustomer->current_partner_id,
+                    'sub_partner_id' => $existingCustomer->current_sub_partner_id,
+                    'customer_id' => $existingCustomer->id,
+                    'status' => 'new',
+                ]);
+
+                $lead->statusHistories()->create([
+                    'from_status' => null,
+                    'to_status' => 'new',
+                    'changed_by_user_id' => null,
+                    'remarks' => 'Existing customer re-registered (Kept existing partner mapping).',
+                ]);
+
+                return $existingCustomer;
             }
 
-            // New customer registration path blocked pending customer_code generation format
-            throw new RuntimeException(
-                'customer_code generation policy not confirmed — NEEDS BUSINESS CONFIRMATION #8'
-            );
+            // Generate unique customer code
+            do {
+                $customerCode = 'CUST-'.strtoupper(Str::random(8));
+            } while (Customer::where('customer_code', $customerCode)->exists());
+
+            $partnerId = $resolvedReferral?->partner_id;
+            $subPartnerId = $resolvedReferral?->sub_partner_id;
+
+            $customer = Customer::create([
+                'customer_code' => $customerCode,
+                'name' => $data['name'],
+                'email' => $data['email'] ?? null,
+                'email_normalized' => $emailNormalized,
+                'mobile' => $data['mobile'] ?? null,
+                'mobile_normalized' => $mobileNormalized,
+                'current_partner_id' => $partnerId,
+                'current_sub_partner_id' => $subPartnerId,
+                'status' => 'active',
+            ]);
+
+            if ($partnerId) {
+                $customer->attributions()->create([
+                    'partner_id' => $partnerId,
+                    'sub_partner_id' => $subPartnerId,
+                    'referral_code_id' => $resolvedReferral?->id,
+                    'starts_at' => now(),
+                    'changed_by_user_id' => null,
+                ]);
+            }
+
+            $lead = Lead::create([
+                'name' => $data['name'],
+                'email' => $data['email'] ?? null,
+                'email_normalized' => $emailNormalized,
+                'mobile' => $data['mobile'] ?? null,
+                'mobile_normalized' => $mobileNormalized,
+                'partner_id' => $partnerId,
+                'sub_partner_id' => $subPartnerId,
+                'customer_id' => $customer->id,
+                'status' => 'new',
+            ]);
+
+            $lead->statusHistories()->create([
+                'from_status' => null,
+                'to_status' => 'new',
+                'changed_by_user_id' => null,
+                'remarks' => 'Registered '.($resolvedReferral ? 'via referral' : 'unassigned').'.',
+            ]);
+
+            return $customer;
         });
     }
 

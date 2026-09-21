@@ -6,11 +6,14 @@ use App\Domain\Authentication\Services\TenantContext;
 use App\Domain\Payments\Order;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class OrderController extends Controller
 {
-    public function index(TenantContext $tenant): JsonResponse
+    public function index(Request $request, TenantContext $tenant): JsonResponse|Response
     {
         Gate::authorize('viewAny', Order::class);
 
@@ -31,8 +34,14 @@ class OrderController extends Controller
 
         $orders = $query->with(['customer', 'items.product', 'items.productPlan'])->latest('ordered_at')->get();
 
-        return response()->json([
-            'data' => $orders,
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
+            return response()->json([
+                'data' => $orders,
+            ]);
+        }
+
+        return Inertia::render('Orders/Index', [
+            'orders' => $orders,
         ]);
     }
 

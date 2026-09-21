@@ -8,11 +8,14 @@ use App\Domain\Subscriptions\Subscription;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Subscriptions\CancelSubscriptionRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class SubscriptionController extends Controller
 {
-    public function index(TenantContext $tenant): JsonResponse
+    public function index(Request $request, TenantContext $tenant): JsonResponse|Response
     {
         Gate::authorize('viewAny', Subscription::class);
 
@@ -33,8 +36,14 @@ class SubscriptionController extends Controller
 
         $subscriptions = $query->with(['customer', 'product', 'productPlan'])->latest()->get();
 
-        return response()->json([
-            'data' => $subscriptions,
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
+            return response()->json([
+                'data' => $subscriptions,
+            ]);
+        }
+
+        return Inertia::render('Subscriptions/Index', [
+            'subscriptions' => $subscriptions,
         ]);
     }
 

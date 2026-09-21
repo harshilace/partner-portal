@@ -1,5 +1,5 @@
 <script setup>
-import { Head, useForm, Link } from '@inertiajs/vue3';
+import { Head, useForm, Link, usePage } from '@inertiajs/vue3';
 import GuestLayout from '../Layouts/GuestLayout.vue';
 
 const props = defineProps({
@@ -9,6 +9,8 @@ const props = defineProps({
     },
 });
 
+const page = usePage();
+
 const form = useForm({
     name: '',
     email: '',
@@ -17,7 +19,11 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post('/register');
+    form.post('/register', {
+        onSuccess: () => {
+            form.reset('name', 'email', 'mobile');
+        },
+    });
 };
 </script>
 
@@ -29,6 +35,16 @@ const submit = () => {
         <p class="text-xs text-slate-400 mb-6 text-center">
             Register via Partner Referral or Public Access
         </p>
+
+        <div
+            v-if="page.props.flash?.success || page.props.flash?.message"
+            class="mb-6 p-4 bg-emerald-950/60 border border-emerald-500/50 rounded-lg text-emerald-300 text-sm text-center flex items-center justify-center gap-2"
+        >
+            <svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            <span>{{ page.props.flash?.success || page.props.flash?.message }}</span>
+        </div>
 
         <form @submit.prevent="submit" class="space-y-4">
             <div>
