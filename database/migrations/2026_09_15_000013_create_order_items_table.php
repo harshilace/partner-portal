@@ -20,9 +20,6 @@ return new class extends Migration
             $table->unsignedInteger('quantity')->default(1);
             $table->decimal('total_price', 15, 2)->default(0.00);
             $table->timestamps();
-
-            $table->check('unit_price >= 0');
-            $table->check('total_price >= 0');
         });
     }
 

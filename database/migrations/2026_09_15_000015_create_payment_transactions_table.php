@@ -22,7 +22,6 @@ return new class extends Migration
             $table->timestamp('transacted_at');
             $table->timestamps();
 
-            $table->check('amount >= 0');
             $table->index('transaction_reference');
         });
     }

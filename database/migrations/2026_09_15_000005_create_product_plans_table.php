@@ -23,7 +23,6 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['product_id', 'code']);
-            $table->check('price >= 0');
             $table->index('is_active');
         });
     }

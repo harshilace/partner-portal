@@ -24,7 +24,6 @@ return new class extends Migration
             $table->timestamp('ordered_at');
             $table->timestamps();
 
-            $table->check('total_amount >= 0');
             $table->index('status');
             $table->index('ordered_at');
         });
