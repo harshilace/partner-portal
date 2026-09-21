@@ -21,10 +21,11 @@ use App\Http\Controllers\Sales\SaleController;
 use App\Http\Controllers\Subscriptions\AutoDebitController;
 use App\Http\Controllers\Subscriptions\SubscriptionController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome');
+    return auth()->check()
+        ? redirect()->route('dashboard')
+        : redirect()->route('login');
 });
 
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login')->middleware('guest');

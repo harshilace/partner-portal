@@ -40,7 +40,7 @@ class InertiaSharedPropsTest extends TestCase
      */
     public function test_unauthenticated_request_shares_null_user(): void
     {
-        $response = $this->get('/');
+        $response = $this->get('/login');
 
         $response->assertStatus(200);
         $response->assertInertia(fn (Assert $page) => $page

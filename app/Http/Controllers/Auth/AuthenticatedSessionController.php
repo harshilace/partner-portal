@@ -29,7 +29,7 @@ class AuthenticatedSessionController extends Controller
     {
         $user = $request->authenticate($action);
 
-        if ($request->wantsJson()) {
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
             return response()->json([
                 'message' => 'Authenticated successfully.',
                 'user' => [
@@ -42,7 +42,7 @@ class AuthenticatedSessionController extends Controller
             ]);
         }
 
-        return redirect()->intended('/');
+        return redirect()->intended(route('dashboard'));
     }
 
     /**
@@ -52,12 +52,12 @@ class AuthenticatedSessionController extends Controller
     {
         $action->execute($request);
 
-        if ($request->wantsJson()) {
+        if ($request->wantsJson() && ! $request->header('X-Inertia')) {
             return response()->json([
                 'message' => 'Logged out successfully.',
             ]);
         }
 
-        return redirect('/');
+        return redirect()->route('login');
     }
 }
