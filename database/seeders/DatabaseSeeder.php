@@ -95,5 +95,8 @@ class DatabaseSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
+
+        // Demo Data for all screen tables
+        $this->call(DemoDataSeeder::class);
     }
 }
