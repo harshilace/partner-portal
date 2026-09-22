@@ -6,6 +6,11 @@
 
         <title inertia>{{ config('app.name', 'Partner Portal') }}</title>
 
+        <!-- Favicon / Title Bar Icon -->
+        <link rel="icon" type="image/png" href="/assets/logo.png">
+        <link rel="icon" type="image/x-icon" href="/favicon.ico">
+        <link rel="apple-touch-icon" href="/assets/logo.png">
+
         <!-- Scripts and Styles -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @inertiaHead

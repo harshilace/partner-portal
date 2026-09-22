@@ -37,7 +37,8 @@ const isCurrent = (path) => {
             <div class="flex items-center justify-between h-16">
                 <!-- Brand and Desktop Navigation Links -->
                 <div class="flex items-center gap-6">
-                    <Link href="/dashboard" class="flex items-center gap-2 text-white font-bold tracking-tight text-lg">
+                    <Link href="/dashboard" class="flex items-center gap-2.5 text-white font-bold tracking-tight text-lg">
+                        <img src="/assets/logo.png" alt="Partner Portal" class="w-8 h-8 rounded-lg object-contain shrink-0" />
                         <span>Partner Portal</span>
                     </Link>
 
