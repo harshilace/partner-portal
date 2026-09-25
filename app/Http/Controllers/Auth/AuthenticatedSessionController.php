@@ -42,7 +42,7 @@ class AuthenticatedSessionController extends Controller
             ]);
         }
 
-        return redirect()->intended(route('dashboard'));
+        return redirect()->intended(route('dashboard'))->with('success', 'Logged in successfully! Welcome back.');
     }
 
     /**
@@ -58,6 +58,6 @@ class AuthenticatedSessionController extends Controller
             ]);
         }
 
-        return redirect()->route('login');
+        return redirect()->route('login')->with('info', 'Logged out successfully.');
     }
 }

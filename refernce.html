@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Partner Portal — Management &amp; Distribution</title>
+<!-- Google Font: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#1d4ed8',
+              700: '#1e40af',
+              800: '#1e3a8a',
+              900: '#172554',
+              accent: '#2563eb',
+              electric: '#4f46e5'
+            }
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Ambient Styles -->
+<style data-purpose="background-mesh-and-decor">
+    /* Subtle background grid pattern overlay on the left hero panel */
+    .bg-grid-pattern {
+      background-size: 36px 36px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    }
+    
+    /* Glowing radial spheres to match modern SaaS visual language */
+    .ambient-sphere-top {
+      background: radial-gradient(circle, rgba(96, 165, 250, 0.35) 0%, rgba(37, 99, 235, 0.05) 70%, transparent 100%);
+    }
+
+    .ambient-sphere-bottom {
+      background: radial-gradient(circle, rgba(79, 70, 229, 0.45) 0%, rgba(30, 58, 138, 0.1) 75%, transparent 100%);
+    }
+    
+    .glass-pill {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+  </style>
+<!-- END: Custom Ambient Styles -->
+</head>
+<body class="h-full bg-slate-50 text-slate-900 antialiased font-sans select-none overflow-x-hidden">
+<!-- BEGIN: MainContainer -->
+<main class="min-h-screen w-full flex flex-col lg:flex-row">
+<!-- BEGIN: LeftHeroPanel -->
+<section class="relative lg:w-[54%] w-full min-h-[640px] lg:min-h-screen bg-gradient-to-br from-[#1d4ed8] via-[#1e40af] to-[#172554] text-white flex flex-col justify-between p-8 sm:p-12 lg:p-16 overflow-hidden" data-purpose="hero-brand-panel">
+<!-- Background Ambient Geometric Elements -->
+<div class="absolute inset-0 bg-grid-pattern pointer-events-none opacity-60"></div>
+<div class="ambient-sphere-top absolute -top-24 -left-24 w-[500px] h-[500px] rounded-full blur-2xl pointer-events-none"></div>
+<div class="ambient-sphere-bottom absolute -bottom-24 right-10 w-[600px] h-[600px] rounded-full blur-3xl pointer-events-none"></div>
+<!-- Top Section: Logo & Brand Header -->
+<!-- BEGIN: BrandHeader -->
+<header class="relative z-10 flex items-center space-x-3.5">
+<!-- Logo Icon Badge -->
+<div class="w-11 h-11 rounded-xl bg-white/15 backdrop-blur-md border border-white/25 shadow-inner flex items-center justify-center text-white">
+<svg aria-hidden="true" class="w-6 h-6 fill-current" viewbox="0 0 24 24">
+<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<!-- Brand Name & Description -->
+<div>
+<h2 class="text-lg font-bold tracking-tight text-white leading-tight">Partner Portal</h2>
+<p class="text-xs font-medium text-blue-200/90 tracking-wide">Management &amp; Distribution</p>
+</div>
+</header>
+<!-- END: BrandHeader -->
+<!-- Center Content: Headline & Feature List -->
+<!-- BEGIN: HeroBody -->
+<div class="relative z-10 max-w-xl my-12 lg:my-0">
+<!-- Primary Headline -->
+<h1 class="text-4xl sm:text-5xl lg:text-[3.25rem] font-extrabold leading-[1.12] tracking-tight text-white drop-shadow-sm">
+          Grow your <br class="hidden sm:inline"/>partner network <br class="hidden sm:inline"/>with confidence.
+        </h1>
+<!-- Supporting Paragraph -->
+<p class="mt-6 text-base sm:text-lg text-blue-100/90 font-normal leading-relaxed max-w-lg">
+          Manage partners, track referrals, monitor subscriptions, and drive revenue — all from one powerful dashboard.
+        </p>
+<!-- Feature List with Glass Badges -->
+<div class="mt-8 space-y-3.5">
+<!-- Feature Item 1 -->
+<div class="flex items-center space-x-3.5 glass-pill py-2.5 px-4 rounded-xl shadow-sm max-w-md transition-all hover:bg-white/10">
+<div class="flex-shrink-0 w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-blue-200">
+<!-- Network Icon -->
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<span class="text-sm font-medium tracking-wide text-white/95">Multi-tier partner management</span>
+</div>
+<!-- Feature Item 2 -->
+<div class="flex items-center space-x-3.5 glass-pill py-2.5 px-4 rounded-xl shadow-sm max-w-md transition-all hover:bg-white/10">
+<div class="flex-shrink-0 w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-blue-200">
+<!-- Chart Icon -->
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<span class="text-sm font-medium tracking-wide text-white/95">Real-time sales &amp; commission reports</span>
+</div>
+<!-- Feature Item 3 -->
+<div class="flex items-center space-x-3.5 glass-pill py-2.5 px-4 rounded-xl shadow-sm max-w-md transition-all hover:bg-white/10">
+<div class="flex-shrink-0 w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-blue-200">
+<!-- Share / Lead Icon -->
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<span class="text-sm font-medium tracking-wide text-white/95">Referral tracking &amp; lead management</span>
+</div>
+</div>
+</div>
+<!-- END: HeroBody -->
+<!-- Bottom Metrics Bar -->
+<!-- BEGIN: HeroMetrics -->
+<footer class="relative z-10 pt-8 border-t border-white/15">
+<div class="grid grid-cols-3 gap-6 max-w-lg">
+<!-- Metric 1 -->
+<div>
+<p class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">500+</p>
+<p class="mt-1 text-xs sm:text-sm font-medium text-blue-200/80">Active Partners</p>
+</div>
+<!-- Metric 2 -->
+<div class="border-l border-white/10 pl-6">
+<p class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">12K+</p>
+<p class="mt-1 text-xs sm:text-sm font-medium text-blue-200/80">Referrals Tracked</p>
+</div>
+<!-- Metric 3 -->
+<div class="border-l border-white/10 pl-6">
+<p class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">99.9%</p>
+<p class="mt-1 text-xs sm:text-sm font-medium text-blue-200/80">Uptime SLA</p>
+</div>
+</div>
+</footer>
+<!-- END: HeroMetrics -->
+</section>
+<!-- END: LeftHeroPanel -->
+<!-- BEGIN: RightAuthPanel -->
+<section class="lg:w-[46%] w-full bg-white flex flex-col justify-between px-6 sm:px-12 lg:px-20 py-10 lg:py-12" data-purpose="auth-interaction-panel">
+<!-- Top Spacer to maintain elegant balance -->
+<div class="hidden lg:block w-full h-4"></div>
+<!-- Auth Form Container -->
+<div class="w-full max-w-[420px] mx-auto my-auto">
+<!-- Auth Header -->
+<header class="mb-8">
+<h2 class="text-3xl font-bold tracking-tight text-slate-900">Welcome back</h2>
+<p class="mt-2 text-sm text-slate-500">Sign in to your partner account to continue.</p>
+</header>
+<!-- Form Elements -->
+<form action="#" class="space-y-5" method="POST" onsubmit="event.preventDefault();">
+<!-- Email Field -->
+<div data-purpose="form-group-email">
+<label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2" for="email">
+              Email address
+            </label>
+<div class="relative rounded-lg shadow-sm">
+<div class="pointer-events-none absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+<!-- Mail Icon -->
+<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<input autocomplete="email" class="block w-full rounded-lg border-slate-200 bg-slate-50/50 pl-10 pr-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-brand-accent focus:ring-4 focus:ring-brand-accent/10 transition duration-150" id="email" name="email" placeholder="you@example.com" required="" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div data-purpose="form-group-password">
+<div class="flex items-center justify-between mb-2">
+<label class="block text-xs font-semibold uppercase tracking-wider text-slate-600" for="password">
+                Password
+              </label>
+<a class="text-xs font-semibold text-brand-accent hover:text-blue-700 transition" href="#">
+                Forgot password?
+              </a>
+</div>
+<div class="relative rounded-lg shadow-sm">
+<div class="pointer-events-none absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+<!-- Lock Icon -->
+<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<input autocomplete="current-password" class="block w-full rounded-lg border-slate-200 bg-slate-50/50 pl-10 pr-10 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-brand-accent focus:ring-4 focus:ring-brand-accent/10 transition duration-150" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+<!-- Password Toggle Visibility Button -->
+<button aria-label="Toggle password visibility" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none" id="toggle-password-btn" type="button">
+<svg class="h-4 w-4" fill="none" id="eye-icon" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- Remember Me Checkbox -->
+<div class="flex items-center">
+<input class="h-4 w-4 rounded border-slate-300 text-brand-accent focus:ring-brand-accent/20 cursor-pointer" id="remember-me" name="remember-me" type="checkbox"/>
+<label class="ml-2 block text-xs text-slate-600 cursor-pointer" for="remember-me">
+              Remember this device for 30 days
+            </label>
+</div>
+<!-- Primary Sign In Button -->
+<div class="pt-2">
+<button class="w-full h-11 inline-flex items-center justify-center rounded-lg bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-sm shadow-md hover:shadow-lg transition-all duration-150 focus:outline-none focus:ring-4 focus:ring-blue-500/25" type="submit">
+<span>Sign In</span>
+<svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</form>
+<!-- Divider -->
+<div class="relative my-7">
+<div class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-slate-200"></div>
+</div>
+<div class="relative flex justify-center text-xs">
+<span class="bg-white px-3 text-slate-400 font-medium">New to Partner Portal?</span>
+</div>
+</div>
+<!-- Secondary CTA: Register Button -->
+<a class="w-full h-11 inline-flex items-center justify-center rounded-lg border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-medium text-sm transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-slate-200 shadow-sm" href="#">
+          Register with a referral code
+        </a>
+<!-- Security / Trust Badges -->
+<aside class="mt-8 pt-6 border-t border-slate-100 flex items-center justify-center gap-x-4 sm:gap-x-6 text-[11px] text-slate-500">
+<!-- 256-bit SSL -->
+<div class="flex items-center space-x-1.5 text-emerald-600">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24">
+<path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-slate-600 font-medium">256-bit SSL</span>
+</div>
+<span class="text-slate-300">•</span>
+<!-- Role-based access -->
+<div class="flex items-center space-x-1.5 text-blue-600">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24">
+<path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-slate-600 font-medium">Role-based access</span>
+</div>
+<span class="text-slate-300">•</span>
+<!-- Audit trail -->
+<div class="flex items-center space-x-1.5 text-indigo-600">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24">
+<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-slate-600 font-medium">Audit trail</span>
+</div>
+</aside>
+</div>
+<!-- Footer Info -->
+<footer class="mt-8 text-center text-xs text-slate-400">
+<p>© 2026 Partner Portal. All rights reserved.</p>
+</footer>
+</section>
+<!-- END: RightAuthPanel -->
+</main>
+<!-- END: MainContainer -->
+<!-- BEGIN: Interactive Behavior Script -->
+<script data-purpose="password-toggle">
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggleBtn = document.getElementById('toggle-password-btn');
+      const passwordInput = document.getElementById('password');
+
+      if (toggleBtn && passwordInput) {
+        toggleBtn.addEventListener('click', () => {
+          const isPassword = passwordInput.getAttribute('type') === 'password';
+          passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+          
+          // Toggle opacity for interaction visual cue
+          toggleBtn.classList.toggle('text-blue-600', isPassword);
+          toggleBtn.classList.toggle('text-slate-400', !isPassword);
+        });
+      }
+    });
+  </script>
+<!-- END: Interactive Behavior Script -->
+</body></html>
