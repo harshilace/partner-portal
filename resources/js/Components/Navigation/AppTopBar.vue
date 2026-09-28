@@ -3,7 +3,6 @@ import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { usePage, Link } from '@inertiajs/vue3';
 import {
     BellIcon,
-    MagnifyingGlassIcon,
     Bars3Icon,
     ChevronRightIcon,
     ChevronDownIcon,
@@ -11,7 +10,9 @@ import {
     UserIcon,
     Cog6ToothIcon,
     SparklesIcon,
+    XMarkIcon,
 } from '@heroicons/vue/24/outline';
+
 
 const emit = defineEmits(['toggle-mobile']);
 
@@ -64,6 +65,14 @@ const toggleProfile = (e) => {
 
 const markAllRead = () => {
     notifications.value.forEach(n => n.unread = false);
+};
+
+const clearNotification = (id) => {
+    notifications.value = notifications.value.filter(n => n.id !== id);
+};
+
+const clearAllNotifications = () => {
+    notifications.value = [];
 };
 
 const closeDropdowns = (e) => {
@@ -126,7 +135,7 @@ const breadcrumb = computed(() => {
 </script>
 
 <template>
-    <header class="h-16 bg-white/95 backdrop-blur-xl border-b border-gray-200/80 sticky top-0 z-30 flex items-center justify-between px-4 sm:px-6 lg:px-8 xl:px-10 transition-all duration-200">
+    <header class="h-16 w-full bg-white/90 backdrop-blur-xl border border-gray-200/80 shadow-lg shadow-slate-200/60 rounded-2xl sticky top-4 sm:top-5 z-30 flex items-center justify-between px-4 sm:px-6 transition-all duration-200">
         <!-- Left: Mobile Toggle + Breadcrumbs & Title -->
         <div class="flex items-center gap-3 sm:gap-4 min-w-0">
             <!-- Mobile Menu Toggle Button -->
@@ -152,16 +161,7 @@ const breadcrumb = computed(() => {
             </div>
         </div>
 
-        <!-- Middle: Global Quick Search Input -->
-        <div class="hidden md:flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-gray-50 border border-gray-200/80 text-gray-400 text-xs w-64 lg:w-80 focus-within:bg-white focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/15 transition-all">
-            <MagnifyingGlassIcon class="w-4 h-4 text-gray-400 shrink-0" />
-            <input
-                type="text"
-                placeholder="Search portal, partners, orders..."
-                class="w-full bg-transparent border-0 p-0 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-0"
-            />
-            <kbd class="hidden lg:inline-block px-1.5 py-0.5 text-[10px] font-semibold text-gray-400 bg-gray-200/60 rounded border border-gray-300/60">⌘K</kbd>
-        </div>
+
 
         <!-- Right: Notifications & User Profile Dropdowns -->
         <div class="flex items-center gap-3 sm:gap-4 shrink-0">
@@ -213,26 +213,52 @@ const breadcrumb = computed(() => {
                             <div
                                 v-for="n in notifications"
                                 :key="n.id"
-                                :class="['p-3.5 flex gap-3 hover:bg-gray-50 transition-colors cursor-pointer', n.unread ? 'bg-blue-50/40' : '']"
+                                :class="['p-3.5 flex gap-3 hover:bg-gray-50 transition-colors cursor-pointer group relative', n.unread ? 'bg-blue-50/40' : '']"
                             >
                                 <div class="shrink-0 w-8 h-8 rounded-xl flex items-center justify-center text-blue-600 bg-blue-100/70 mt-0.5">
                                     <SparklesIcon class="w-4 h-4" />
                                 </div>
-                                <div class="flex-1 min-w-0">
+                                <div class="flex-1 min-w-0 pr-6">
                                     <div class="flex items-center justify-between text-xs">
                                         <span class="font-bold text-gray-900 truncate">{{ n.title }}</span>
                                         <span class="text-[10px] text-gray-400 shrink-0 ml-2">{{ n.time }}</span>
                                     </div>
                                     <p class="text-xs text-gray-600 mt-0.5 leading-snug line-clamp-2">{{ n.description }}</p>
                                 </div>
+                                <button
+                                    type="button"
+                                    @click.stop="clearNotification(n.id)"
+                                    class="p-1 text-gray-400 hover:text-red-600 hover:bg-gray-200/60 rounded-lg opacity-0 group-hover:opacity-100 transition-all absolute right-2.5 top-3 cursor-pointer"
+                                    title="Clear notification"
+                                >
+                                    <XMarkIcon class="w-3.5 h-3.5" />
+                                </button>
+                            </div>
+
+                            <div v-if="notifications.length === 0" class="py-8 px-4 text-center text-gray-400 text-xs">
+                                <BellIcon class="w-8 h-8 mx-auto mb-2 text-gray-300 stroke-1" />
+                                <p class="font-medium text-gray-600">No notifications</p>
+                                <p class="text-[11px] text-gray-400 mt-0.5">You're all caught up!</p>
                             </div>
                         </div>
 
                         <!-- Footer -->
-                        <div class="p-2.5 bg-gray-50/80 border-t border-gray-100 text-center">
-                            <span class="text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors cursor-pointer block py-1">
+                        <div class="p-2.5 px-4 bg-gray-50/80 border-t border-gray-100 flex items-center justify-between text-xs">
+                            <Link
+                                href="/notifications"
+                                @click="isNotificationOpen = false"
+                                class="font-semibold text-blue-600 hover:text-blue-700 transition-colors cursor-pointer"
+                            >
                                 View all notifications
-                            </span>
+                            </Link>
+                            <button
+                                v-if="notifications.length > 0"
+                                type="button"
+                                @click="clearAllNotifications"
+                                class="font-medium text-gray-500 hover:text-red-600 transition-colors cursor-pointer"
+                            >
+                                Clear all
+                            </button>
                         </div>
                     </div>
                 </Transition>
@@ -250,14 +276,14 @@ const breadcrumb = computed(() => {
                 >
                     <!-- User Avatar / Initials with Status Ring -->
                     <div class="relative shrink-0">
-                        <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold text-xs flex items-center justify-center ring-2 ring-blue-500/20">
+                        <div class="w-9 h-9 rounded-full bg-linear-to-tr from-blue-600 to-indigo-600 text-white font-bold text-xs flex items-center justify-center ring-2 ring-blue-500/20">
                             {{ userInitials }}
                         </div>
                         <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white"></span>
                     </div>
 
                     <!-- User Name & Role Pill (Desktop) -->
-                    <div class="hidden md:flex flex-col text-left min-w-0 max-w-[150px]">
+                    <div class="hidden md:flex flex-col text-left min-w-0 max-w-37.5">
                         <div class="text-xs font-bold text-gray-900 truncate leading-tight">{{ user.name }}</div>
                         <div class="text-[10px] font-semibold text-blue-700 bg-blue-50 border border-blue-200/70 px-1.5 py-0.5 rounded-md w-fit mt-0.5 truncate">
                             {{ roleLabel }}
@@ -285,9 +311,6 @@ const breadcrumb = computed(() => {
                             <p class="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">Signed in as</p>
                             <p class="text-sm font-bold text-gray-900 truncate mt-0.5">{{ user.name }}</p>
                             <p class="text-xs text-gray-500 truncate">{{ user.email }}</p>
-                            <div class="mt-2 inline-flex px-2 py-0.5 text-[10px] font-bold rounded-full bg-blue-100 text-blue-700">
-                                {{ roleLabel }}
-                            </div>
                         </div>
 
                         <!-- Menu Items -->

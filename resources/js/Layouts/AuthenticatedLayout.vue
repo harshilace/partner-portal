@@ -48,7 +48,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="min-h-screen bg-slate-50/70 text-gray-800 flex overflow-x-hidden selection:bg-blue-500 selection:text-white">
+    <div class="min-h-screen bg-slate-50/70 text-gray-800 flex selection:bg-blue-500 selection:text-white">
         <!-- Global Toast Notification Container -->
         <ToastNotification />
 
@@ -70,8 +70,10 @@ onUnmounted(() => {
 
         <!-- Main Canvas -->
         <div class="flex-1 flex flex-col min-w-0 min-h-screen">
-            <!-- Compact Top Bar -->
-            <AppTopBar @toggle-mobile="toggleMobile" />
+            <!-- Compact Floating Top Bar Wrapper -->
+            <div class="px-4 sm:px-6 lg:px-8 xl:px-10 pt-4 sm:pt-5">
+                <AppTopBar @toggle-mobile="toggleMobile" />
+            </div>
 
             <!-- Page Content (Uses Full Available Width) -->
             <main id="main-content" class="flex-1 w-full px-4 sm:px-6 lg:px-8 xl:px-10 py-6 sm:py-8 focus:outline-none" tabindex="-1">
@@ -84,17 +86,6 @@ onUnmounted(() => {
                     <span class="font-bold text-gray-900">Partner Portal</span>
                     <span>&bull;</span>
                     <span>&copy; {{ new Date().getFullYear() }} All rights reserved.</span>
-                </div>
-                <div class="flex items-center gap-2 text-gray-500">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span>Connected to Partner Network</span>
-                    <span class="text-gray-300">&bull;</span>
-                    <span class="text-gray-400 font-mono text-[11px]">v2.4.0</span>
-                </div>
-                <div class="flex items-center gap-4 text-gray-500">
-                    <a href="#" class="hover:text-blue-600 transition-colors">Documentation</a>
-                    <a href="#" class="hover:text-blue-600 transition-colors">Support</a>
-                    <a href="#" class="hover:text-blue-600 transition-colors">System Status</a>
                 </div>
             </footer>
         </div>

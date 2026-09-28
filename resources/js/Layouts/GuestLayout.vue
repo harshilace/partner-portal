@@ -15,8 +15,8 @@ import ToastNotification from '../Components/Common/ToastNotification.vue';
              style="background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 50%, #172554 100%);"><div class="absolute inset-0 pointer-events-none" style="background-size:36px 36px;background-image:linear-gradient(to right,rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.05) 1px,transparent 1px);" />
 
             <!-- Ambient spheres -->
-            <div class="absolute -top-24 -left-24 w-[500px] h-[500px] rounded-full blur-2xl pointer-events-none" style="background:radial-gradient(circle,rgba(96,165,250,.3) 0%,rgba(37,99,235,.05) 70%,transparent 100%);" />
-            <div class="absolute -bottom-24 right-0 w-[550px] h-[550px] rounded-full blur-3xl pointer-events-none" style="background:radial-gradient(circle,rgba(79,70,229,.4) 0%,rgba(30,58,138,.08) 75%,transparent 100%);" />
+            <div class="absolute -top-24 -left-24 w-125 h-125 rounded-full blur-2xl pointer-events-none" style="background:radial-gradient(circle,rgba(96,165,250,.3) 0%,rgba(37,99,235,.05) 70%,transparent 100%);" />
+            <div class="absolute -bottom-24 right-0 w-137.5 h-137.5 rounded-full blur-3xl pointer-events-none" style="background:radial-gradient(circle,rgba(79,70,229,.4) 0%,rgba(30,58,138,.08) 75%,transparent 100%);" />
 
             <!-- TOP: Logo -->
             <header class="relative z-10 flex items-center gap-3.5">

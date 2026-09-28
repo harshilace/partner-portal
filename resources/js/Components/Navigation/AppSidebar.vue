@@ -126,9 +126,21 @@ const activeSection = (section) => {
     <!-- Desktop Sidebar                           -->
     <!-- ══════════════════════════════════════════ -->
     <aside
-        :class="['hidden lg:flex flex-col bg-white border-r border-blue-100 transition-all duration-200 select-none z-30 shrink-0 sticky top-0 h-screen', isCollapsed ? 'w-16' : 'w-64']"
+        :class="['hidden lg:flex flex-col bg-white border-r border-blue-100 transition-all duration-200 select-none z-30 shrink-0 sticky top-0 h-screen relative', isCollapsed ? 'w-16' : 'w-64']"
         aria-label="Sidebar Navigation"
     >
+        <!-- Floating Collapse/Expand Button on Sidebar Border -->
+        <button
+            type="button"
+            @click="emit('toggle-collapsed')"
+            class="absolute -right-3.5 top-64 z-40 w-7 h-7 rounded-full bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-600/30 flex items-center justify-center transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 group"
+            :title="isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'"
+            :aria-label="isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'"
+        >
+            <ChevronDoubleLeftIcon v-if="!isCollapsed" class="w-3.5 h-3.5 stroke-[2.5] text-white transition-transform group-hover:-translate-x-0.5" />
+            <ChevronDoubleRightIcon v-else class="w-3.5 h-3.5 stroke-[2.5] text-white transition-transform group-hover:translate-x-0.5" />
+        </button>
+
         <!-- Brand Header -->
         <div class="h-16 flex items-center justify-between px-4 border-b border-blue-100 shrink-0">
             <Link href="/dashboard" class="flex items-center gap-2.5 min-w-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">
@@ -172,21 +184,6 @@ const activeSection = (section) => {
                     </div>
                 </div>
             </template>
-        </div>
-
-        <!-- Collapse Toggle -->
-        <div class="p-3 border-t border-blue-100 shrink-0">
-            <button
-                type="button"
-                @click="emit('toggle-collapsed')"
-                :class="['w-full flex items-center rounded-lg text-xs font-medium text-gray-500 hover:text-gray-800 hover:bg-blue-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500', isCollapsed ? 'justify-center p-2.5' : 'gap-2 px-3 py-2']"
-                :title="isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'"
-                :aria-label="isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'"
-            >
-                <ChevronDoubleLeftIcon v-if="!isCollapsed" class="w-4 h-4 shrink-0" />
-                <ChevronDoubleRightIcon v-else class="w-4 h-4 shrink-0" />
-                <span v-if="!isCollapsed">Collapse Sidebar</span>
-            </button>
         </div>
     </aside>
 

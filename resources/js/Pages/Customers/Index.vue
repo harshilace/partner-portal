@@ -1,25 +1,40 @@
 <script setup>
+import { computed } from 'vue';
 import { Head } from '@inertiajs/vue3';
 import AuthenticatedLayout from '../../Layouts/AuthenticatedLayout.vue';
+import DataTable from '../../Components/Common/DataTable.vue';
+import { UserGroupIcon } from '@heroicons/vue/24/outline';
 
-defineProps({
-    customers: {
-        type: Array,
-        default: () => [],
-    },
+const props = defineProps({
+    customers: { type: Array, default: () => [] },
 });
 
-const formatDate = (dateStr) => {
-    if (!dateStr) return '—';
-    try {
-        return new Date(dateStr).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-        });
-    } catch {
-        return dateStr;
-    }
+const columns = [
+    { key: 'customer_code', label: 'Code',    sortable: true,  filterable: true },
+    { key: 'name',          label: 'Name',    sortable: true,  filterable: true },
+    { key: 'email',         label: 'Email',   sortable: true,  filterable: true },
+    {
+        key: 'status',
+        label: 'Status',
+        sortable: true,
+        filterable: true,
+        options: [
+            { label: 'Active',   value: 'active' },
+            { label: 'Inactive', value: 'inactive' },
+        ],
+    },
+    { key: 'created_at',    label: 'Created', sortable: true,  filterable: false },
+];
+
+const statusClass = (s) =>
+    s === 'active'
+        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+        : 'bg-gray-100 text-gray-600 border-gray-200';
+
+const formatDate = (d) => {
+    if (!d) return '—';
+    try { return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }); }
+    catch { return d; }
 };
 </script>
 
@@ -27,78 +42,36 @@ const formatDate = (dateStr) => {
     <AuthenticatedLayout>
         <Head title="Customers" />
 
-        <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-bold tracking-tight text-white">Customers</h1>
-                <p class="text-slate-400 text-sm mt-1">Manage attributed customers and partner organization assignments.</p>
-            </div>
-            <div class="flex items-center gap-2">
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-slate-800 text-slate-300 border border-slate-700">
-                    Total: {{ customers.length }}
-                </span>
+        <div class="mb-6">
+            <div class="flex items-center gap-3 mb-1">
+                <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center shadow-sm shadow-indigo-600/30">
+                    <UserGroupIcon class="w-5 h-5 text-white" />
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-gray-900 tracking-tight">Customers</h1>
+                    <p class="text-gray-500 text-xs mt-0.5">Manage attributed customers and partner organization assignments.</p>
+                </div>
             </div>
         </div>
 
-        <div class="bg-slate-800 rounded-xl border border-slate-700 shadow-xl overflow-hidden">
-            <div v-if="customers.length === 0" class="py-12 text-center text-slate-400 text-sm">
-                <p>No customers found.</p>
-            </div>
-
-            <div v-else class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-sm">
-                    <thead>
-                        <tr class="border-b border-slate-700 bg-slate-800/80 text-xs font-semibold uppercase tracking-wider text-slate-400">
-                            <th scope="col" class="px-6 py-3.5">Code</th>
-                            <th scope="col" class="px-6 py-3.5">Name</th>
-                            <th scope="col" class="px-6 py-3.5">Contact</th>
-                            <th scope="col" class="px-6 py-3.5">Partner Assignment</th>
-                            <th scope="col" class="px-6 py-3.5">Status</th>
-                            <th scope="col" class="px-6 py-3.5">Created</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-700/60">
-                        <tr
-                            v-for="customer in customers"
-                            :key="customer.id"
-                            class="hover:bg-slate-700/30 transition-colors"
-                        >
-                            <td class="px-6 py-4 font-mono text-xs font-semibold text-indigo-400 whitespace-nowrap">
-                                {{ customer.customer_code || '—' }}
-                            </td>
-                            <td class="px-6 py-4 font-medium text-white whitespace-nowrap">
-                                {{ customer.name }}
-                            </td>
-                            <td class="px-6 py-4 text-xs text-slate-300 whitespace-nowrap">
-                                <div>{{ customer.email }}</div>
-                                <div v-if="customer.mobile" class="text-slate-400">{{ customer.mobile }}</div>
-                            </td>
-                            <td class="px-6 py-4 text-xs text-slate-300 whitespace-nowrap">
-                                <div>{{ customer.current_partner?.name || 'Unassigned' }}</div>
-                                <div v-if="customer.current_sub_partner" class="text-slate-400">
-                                    {{ customer.current_sub_partner.name }}
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span
-                                    v-if="customer.status === 'active'"
-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                                >
-                                    Active
-                                </span>
-                                <span
-                                    v-else
-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-500/10 text-slate-400 border border-slate-500/20"
-                                >
-                                    {{ customer.status || 'Inactive' }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-xs text-slate-400 whitespace-nowrap">
-                                {{ formatDate(customer.created_at) }}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        <DataTable :rows="customers" :columns="columns" empty-message="No customers found.">
+            <template #row="{ row }">
+                <td class="px-5 py-3.5 font-mono text-xs font-semibold text-indigo-600 whitespace-nowrap">
+                    {{ row.customer_code || '—' }}
+                </td>
+                <td class="px-5 py-3.5 font-medium text-gray-900 whitespace-nowrap">{{ row.name }}</td>
+                <td class="px-5 py-3.5 text-sm text-gray-600 whitespace-nowrap">
+                    <div>{{ row.email }}</div>
+                    <div v-if="row.mobile" class="text-xs text-gray-400">{{ row.mobile }}</div>
+                </td>
+                <td class="px-5 py-3.5 whitespace-nowrap">
+                    <span :class="['inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border capitalize', statusClass(row.status)]">
+                        <span :class="['w-1.5 h-1.5 rounded-full', row.status === 'active' ? 'bg-emerald-500' : 'bg-gray-400']" />
+                        {{ row.status || 'Inactive' }}
+                    </span>
+                </td>
+                <td class="px-5 py-3.5 text-xs text-gray-500 whitespace-nowrap">{{ formatDate(row.created_at) }}</td>
+            </template>
+        </DataTable>
     </AuthenticatedLayout>
 </template>
