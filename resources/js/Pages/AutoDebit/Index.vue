@@ -1,6 +1,8 @@
 <script setup>
 import { Head } from '@inertiajs/vue3';
 import AuthenticatedLayout from '../../Layouts/AuthenticatedLayout.vue';
+import DataTable from '../../Components/Common/DataTable.vue';
+import { CreditCardIcon } from '@heroicons/vue/24/outline';
 
 defineProps({
     mandates: {
@@ -8,6 +10,30 @@ defineProps({
         default: () => [],
     },
 });
+
+const columns = [
+    { key: 'mandate_reference', label: 'Mandate Ref',    sortable: true,  filterable: true },
+    { key: 'customer',          label: 'Customer',       sortable: false, filterable: false },
+    { key: 'subscription',      label: 'Subscription #', sortable: false, filterable: false },
+    {
+        key: 'status',
+        label: 'Status',
+        sortable: true,
+        filterable: true,
+        options: [
+            { label: 'Active',  value: 'active' },
+            { label: 'Stopped', value: 'stopped' },
+            { label: 'Pending', value: 'pending' },
+        ],
+    },
+    { key: 'created_at',       label: 'Created',        sortable: true,  filterable: false },
+];
+
+const statusClass = (s) => ({
+    active:  'bg-emerald-50 text-emerald-700 border-emerald-200',
+    stopped: 'bg-red-50 text-red-600 border-red-200',
+    pending: 'bg-amber-50 text-amber-700 border-amber-200',
+})[s] ?? 'bg-gray-100 text-gray-600 border-gray-200';
 
 const formatDate = (dateStr) => {
     if (!dateStr) return '—';
@@ -27,76 +53,41 @@ const formatDate = (dateStr) => {
     <AuthenticatedLayout>
         <Head title="Auto-Debit Mandates" />
 
-        <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-bold tracking-tight text-white">Auto-Debit Mandates</h1>
-                <p class="text-slate-400 text-sm mt-1">Manage recurring payment mandates and auto-debit statuses.</p>
-            </div>
-            <div class="flex items-center gap-2">
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-slate-800 text-slate-300 border border-slate-700">
-                    Total: {{ mandates.length }}
-                </span>
+        <!-- Page Header -->
+        <div class="mb-6">
+            <div class="flex items-center gap-3 mb-1">
+                <div class="w-9 h-9 rounded-xl bg-cyan-600 flex items-center justify-center shadow-sm shadow-cyan-600/30">
+                    <CreditCardIcon class="w-5 h-5 text-white" />
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-gray-900 tracking-tight">Auto-Debit Mandates</h1>
+                    <p class="text-gray-500 text-xs mt-0.5">Manage recurring payment mandates and auto-debit statuses.</p>
+                </div>
             </div>
         </div>
 
-        <div class="bg-slate-800 rounded-xl border border-slate-700 shadow-xl overflow-hidden">
-            <div v-if="mandates.length === 0" class="py-12 text-center text-slate-400 text-sm">
-                <p>No auto-debit mandates found.</p>
-            </div>
-
-            <div v-else class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-sm">
-                    <thead>
-                        <tr class="border-b border-slate-700 bg-slate-800/80 text-xs font-semibold uppercase tracking-wider text-slate-400">
-                            <th scope="col" class="px-6 py-3.5">Mandate Ref</th>
-                            <th scope="col" class="px-6 py-3.5">Customer</th>
-                            <th scope="col" class="px-6 py-3.5">Subscription #</th>
-                            <th scope="col" class="px-6 py-3.5">Status</th>
-                            <th scope="col" class="px-6 py-3.5">Created</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-700/60">
-                        <tr
-                            v-for="mandate in mandates"
-                            :key="mandate.id"
-                            class="hover:bg-slate-700/30 transition-colors"
-                        >
-                            <td class="px-6 py-4 font-mono text-xs font-semibold text-indigo-400 whitespace-nowrap">
-                                {{ mandate.mandate_reference }}
-                            </td>
-                            <td class="px-6 py-4 font-medium text-white whitespace-nowrap">
-                                {{ mandate.customer?.name || '—' }}
-                            </td>
-                            <td class="px-6 py-4 font-mono text-xs text-slate-300 whitespace-nowrap">
-                                {{ mandate.subscription?.subscription_number || '—' }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span
-                                    v-if="mandate.status === 'active'"
-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                                >
-                                    Active
-                                </span>
-                                <span
-                                    v-else-if="mandate.status === 'stopped'"
-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20"
-                                >
-                                    Stopped
-                                </span>
-                                <span
-                                    v-else
-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-500/10 text-slate-400 border border-slate-500/20 capitalize"
-                                >
-                                    {{ mandate.status || 'Pending' }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-xs text-slate-400 whitespace-nowrap">
-                                {{ formatDate(mandate.created_at) }}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        <!-- DataTable -->
+        <DataTable :rows="mandates" :columns="columns" empty-message="No auto-debit mandates found.">
+            <template #row="{ row }">
+                <td class="px-5 py-3.5 font-mono text-xs font-semibold text-cyan-700 whitespace-nowrap">
+                    {{ row.mandate_reference }}
+                </td>
+                <td class="px-5 py-3.5 font-medium text-gray-900 whitespace-nowrap">
+                    {{ row.customer?.name || '—' }}
+                </td>
+                <td class="px-5 py-3.5 font-mono text-xs text-gray-600 whitespace-nowrap">
+                    {{ row.subscription?.subscription_number || '—' }}
+                </td>
+                <td class="px-5 py-3.5 whitespace-nowrap">
+                    <span :class="['inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border capitalize', statusClass(row.status)]">
+                        <span :class="['w-1.5 h-1.5 rounded-full', row.status === 'active' ? 'bg-emerald-500' : row.status === 'stopped' ? 'bg-red-400' : 'bg-amber-400']" />
+                        {{ row.status || 'Pending' }}
+                    </span>
+                </td>
+                <td class="px-5 py-3.5 text-xs text-gray-500 whitespace-nowrap">
+                    {{ formatDate(row.created_at) }}
+                </td>
+            </template>
+        </DataTable>
     </AuthenticatedLayout>
 </template>

@@ -2,9 +2,11 @@
 import { ref, computed } from 'vue';
 import { usePage, Link } from '@inertiajs/vue3';
 import NavLink from './NavLink.vue';
+import SignOutModal from '@/Components/Common/SignOutModal.vue';
 
 const page = usePage();
 const mobileMenuOpen = ref(false);
+const showSignOutModal = ref(false);
 
 const user = computed(() => page.props.auth?.user);
 const role = computed(() => user.value?.role);
@@ -113,14 +115,13 @@ const isCurrent = (path) => {
                         <div class="text-sm font-medium text-white">{{ user.name }}</div>
                         <div class="text-xs text-slate-400">{{ roleLabel }}</div>
                     </div>
-                    <Link
-                        href="/logout"
-                        method="post"
-                        as="button"
+                    <button
+                        type="button"
+                        @click="showSignOutModal = true"
                         class="px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-md transition-colors cursor-pointer"
                     >
                         Sign Out
-                    </Link>
+                    </button>
                 </div>
 
                 <!-- Mobile Menu Button -->
@@ -204,15 +205,16 @@ const isCurrent = (path) => {
                     <div class="text-sm font-medium text-white">{{ user.name }}</div>
                     <div class="text-xs text-slate-400">{{ roleLabel }}</div>
                 </div>
-                <Link
-                    href="/logout"
-                    method="post"
-                    as="button"
-                    class="px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white bg-slate-800 rounded-md"
+                <button
+                    type="button"
+                    @click="showSignOutModal = true"
+                    class="px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white bg-slate-800 rounded-md cursor-pointer"
                 >
                     Sign Out
-                </Link>
+                </button>
             </div>
         </div>
+
+        <SignOutModal :show="showSignOutModal" @close="showSignOutModal = false" />
     </nav>
 </template>

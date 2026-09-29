@@ -70,10 +70,8 @@ onUnmounted(() => {
 
         <!-- Main Canvas -->
         <div class="flex-1 flex flex-col min-w-0 min-h-screen">
-            <!-- Compact Floating Top Bar Wrapper -->
-            <div class="px-4 sm:px-6 lg:px-8 xl:px-10 pt-4 sm:pt-5">
-                <AppTopBar @toggle-mobile="toggleMobile" />
-            </div>
+            <!-- Animated Sticky Top Bar -->
+            <AppTopBar @toggle-mobile="toggleMobile" />
 
             <!-- Page Content (Uses Full Available Width) -->
             <main id="main-content" class="flex-1 w-full px-4 sm:px-6 lg:px-8 xl:px-10 py-6 sm:py-8 focus:outline-none" tabindex="-1">
@@ -81,12 +79,8 @@ onUnmounted(() => {
             </main>
 
             <!-- Modern SaaS Footer -->
-            <footer class="border-t border-gray-200/80 bg-white/70 backdrop-blur-sm px-4 sm:px-6 lg:px-8 xl:px-10 py-4 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 font-medium gap-3">
-                <div class="flex items-center gap-2 text-gray-500">
-                    <span class="font-bold text-gray-900">Partner Portal</span>
-                    <span>&bull;</span>
-                    <span>&copy; {{ new Date().getFullYear() }} All rights reserved.</span>
-                </div>
+            <footer class="border-t border-gray-200/60 py-4 px-4 flex items-center justify-center text-xs text-gray-500 font-medium text-center">
+                <span><strong class="font-bold text-gray-900">Partner Portal</strong> &bull; &copy; {{ new Date().getFullYear() }} All rights reserved.</span>
             </footer>
         </div>
     </div>

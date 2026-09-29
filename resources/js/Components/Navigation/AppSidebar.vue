@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import { usePage, Link } from '@inertiajs/vue3';
 import {
     Squares2X2Icon,
@@ -15,12 +15,16 @@ import {
     BellIcon,
     ChartBarIcon,
     ShieldCheckIcon,
+    Cog6ToothIcon,
     ChevronDoubleLeftIcon,
     ChevronDoubleRightIcon,
     XMarkIcon,
     Bars3Icon,
     ArrowLeftOnRectangleIcon,
 } from '@heroicons/vue/24/outline';
+import SignOutModal from '@/Components/Common/SignOutModal.vue';
+
+const showSignOutModal = ref(false);
 
 const props = defineProps({
     isCollapsed: {
@@ -108,6 +112,7 @@ const navSections = computed(() => [
         items: [
             { href: '/reports/sales', label: 'Reports', icon: ChartBarIcon, show: true, badge: 'Pending', badgeClass: 'bg-blue-100 text-blue-600 border-blue-300' },
             { href: '/audit', label: 'Audit', icon: ShieldCheckIcon, show: isAdmin.value, badge: 'Restricted', badgeClass: 'bg-amber-50 text-amber-600 border-amber-300' },
+            { href: '/settings', label: 'Settings', icon: Cog6ToothIcon, show: true },
         ],
     },
 ]);
@@ -116,7 +121,7 @@ const activeSection = (section) => {
     if (section.label === 'Overview') return isCurrent('/dashboard');
     if (section.label === 'Network') return ['/partners', '/referral-codes', '/leads', '/customers'].some(isCurrent);
     if (section.label === 'Commerce & Lifecycle') return ['/products', '/orders', '/subscriptions', '/auto-debit-mandates', '/renewals'].some(isCurrent);
-    if (section.label === 'System & Governance') return ['/notifications', '/reports', '/audit'].some(isCurrent);
+    if (section.label === 'System & Governance') return ['/notifications', '/reports', '/audit', '/settings'].some(isCurrent);
     return false;
 };
 </script>
@@ -241,11 +246,17 @@ const activeSection = (section) => {
                     <div class="text-sm font-medium text-gray-900 truncate">{{ user.name }}</div>
                     <div class="text-xs text-blue-500 truncate">{{ roleBadgeLabel }}</div>
                 </div>
-                <Link href="/logout" method="post" as="button" class="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-medium text-gray-600 hover:text-gray-900 bg-white hover:bg-blue-50 border border-blue-200 rounded-md transition-colors cursor-pointer">
+                <button
+                    type="button"
+                    @click="showSignOutModal = true"
+                    class="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-medium text-gray-600 hover:text-gray-900 bg-white hover:bg-blue-50 border border-blue-200 rounded-md transition-colors cursor-pointer"
+                >
                     <ArrowLeftOnRectangleIcon class="w-4 h-4" />
                     Sign Out
-                </Link>
+                </button>
             </div>
         </div>
+
+        <SignOutModal :show="showSignOutModal" @close="showSignOutModal = false" />
     </div>
 </template>

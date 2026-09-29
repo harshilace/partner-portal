@@ -12,6 +12,7 @@ import {
     SparklesIcon,
     XMarkIcon,
 } from '@heroicons/vue/24/outline';
+import SignOutModal from '@/Components/Common/SignOutModal.vue';
 
 
 const emit = defineEmits(['toggle-mobile']);
@@ -24,6 +25,7 @@ const isAdmin = computed(() => role.value === 'admin');
 
 const isNotificationOpen = ref(false);
 const isProfileOpen = ref(false);
+const showSignOutModal = ref(false);
 
 const notifications = ref([
     {
@@ -132,10 +134,32 @@ const breadcrumb = computed(() => {
     if (url.startsWith('/audit')) return { section: 'System & Governance', title: 'Audit' };
     return { section: 'Portal', title: 'Dashboard' };
 });
+
+const isScrolled = ref(false);
+
+const handleScroll = () => {
+    isScrolled.value = window.scrollY > 15;
+};
+
+onMounted(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+});
+
+onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll);
+});
 </script>
 
 <template>
-    <header class="h-16 w-full bg-white/90 backdrop-blur-xl border border-gray-200/80 shadow-lg shadow-slate-200/60 rounded-2xl sticky top-4 sm:top-5 z-30 flex items-center justify-between px-4 sm:px-6 transition-all duration-200">
+    <header
+        :class="[
+            'sticky top-0 z-30 flex items-center justify-between transition-all duration-300 ease-out',
+            isScrolled
+                ? 'w-full rounded-none border-b border-gray-200/80 bg-white/95 backdrop-blur-2xl shadow-md shadow-gray-200/40 px-4 sm:px-6 lg:px-8 xl:px-10 py-3.5'
+                : 'mx-4 sm:mx-6 lg:mx-8 xl:mx-10 mt-4 sm:mt-5 rounded-2xl border border-gray-200/80 bg-white/90 backdrop-blur-xl shadow-lg shadow-slate-200/50 px-4 sm:px-6 py-3.5'
+        ]"
+    >
         <!-- Left: Mobile Toggle + Breadcrumbs & Title -->
         <div class="flex items-center gap-3 sm:gap-4 min-w-0">
             <!-- Mobile Menu Toggle Button -->
@@ -243,16 +267,8 @@ const breadcrumb = computed(() => {
                         </div>
 
                         <!-- Footer -->
-                        <div class="p-2.5 px-4 bg-gray-50/80 border-t border-gray-100 flex items-center justify-between text-xs">
-                            <Link
-                                href="/notifications"
-                                @click="isNotificationOpen = false"
-                                class="font-semibold text-blue-600 hover:text-blue-700 transition-colors cursor-pointer"
-                            >
-                                View all notifications
-                            </Link>
+                        <div v-if="notifications.length > 0" class="p-2.5 px-4 bg-gray-50/80 border-t border-gray-100 flex items-center justify-end text-xs">
                             <button
-                                v-if="notifications.length > 0"
                                 type="button"
                                 @click="clearAllNotifications"
                                 class="font-medium text-gray-500 hover:text-red-600 transition-colors cursor-pointer"
@@ -315,39 +331,42 @@ const breadcrumb = computed(() => {
 
                         <!-- Menu Items -->
                         <div class="py-1">
-                            <button
-                                type="button"
+                            <Link
+                                href="/settings?tab=profile"
+                                @click="isProfileOpen = false"
                                 class="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors text-left cursor-pointer"
                             >
                                 <UserIcon class="w-4 h-4 text-gray-400" />
                                 <span>Profile &amp; Account</span>
-                            </button>
-                            <button
-                                type="button"
+                            </Link>
+                            <Link
+                                href="/settings?tab=partner"
+                                @click="isProfileOpen = false"
                                 class="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors text-left cursor-pointer"
                             >
                                 <Cog6ToothIcon class="w-4 h-4 text-gray-400" />
                                 <span>Partner Settings</span>
-                            </button>
+                            </Link>
                         </div>
 
                         <div class="border-t border-gray-100 my-1" />
 
                         <!-- Sign Out Action -->
                         <div class="px-1">
-                            <Link
-                                href="/logout"
-                                method="post"
-                                as="button"
+                            <button
+                                type="button"
+                                @click="isProfileOpen = false; showSignOutModal = true"
                                 class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-xl transition-colors text-left cursor-pointer"
                             >
                                 <ArrowRightOnRectangleIcon class="w-4 h-4 text-red-500" />
                                 <span>Sign Out</span>
-                            </Link>
+                            </button>
                         </div>
                     </div>
                 </Transition>
             </div>
         </div>
     </header>
+
+    <SignOutModal :show="showSignOutModal" @close="showSignOutModal = false" />
 </template>

@@ -80,8 +80,21 @@ const filtered = computed(() => {
     for (const [key, val] of Object.entries(columnFilters.value)) {
         if (val === undefined || val === null || String(val).trim() === '') continue;
         const targetVal = String(val).trim().toLowerCase();
+        const col = props.columns.find((c) => c.key === key);
+
         data = data.filter((row) => {
-            const rowVal = String(row[key] ?? '').toLowerCase();
+            const raw = row[key];
+            if (raw === undefined || raw === null) return false;
+
+            // If column has predefined options or is boolean, use exact match
+            if (col && col.options && col.options.length > 0) {
+                return String(raw).toLowerCase() === targetVal;
+            }
+            if (typeof raw === 'boolean') {
+                return String(raw).toLowerCase() === targetVal;
+            }
+
+            const rowVal = String(raw).toLowerCase();
             return rowVal === targetVal || rowVal.includes(targetVal);
         });
     }
