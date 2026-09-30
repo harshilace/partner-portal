@@ -1,25 +1,35 @@
 <script setup>
+import { computed } from 'vue';
 import { Head } from '@inertiajs/vue3';
 import AuthenticatedLayout from '../../Layouts/AuthenticatedLayout.vue';
+import DataTable from '../../Components/Common/DataTable.vue';
+import { ShareIcon } from '@heroicons/vue/24/outline';
 
-defineProps({
-    referral_codes: {
-        type: Array,
-        default: () => [],
-    },
+const props = defineProps({
+    referral_codes: { type: Array, default: () => [] },
 });
 
-const formatDate = (dateStr) => {
-    if (!dateStr) return '—';
-    try {
-        return new Date(dateStr).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-        });
-    } catch {
-        return dateStr;
-    }
+const columns = [
+    { key: 'code',      label: 'Code',          sortable: true,  filterable: true },
+    { key: 'partner',   label: 'Main Partner',   sortable: false, filterable: false },
+    { key: 'sub_partner', label: 'Sub-Partner',  sortable: false, filterable: false },
+    {
+        key: 'is_active',
+        label: 'Status',
+        sortable: true,
+        filterable: true,
+        options: [
+            { label: 'Active',   value: 'true' },
+            { label: 'Inactive', value: 'false' },
+        ],
+    },
+    { key: 'created_at', label: 'Created',       sortable: true,  filterable: false },
+];
+
+const formatDate = (d) => {
+    if (!d) return '—';
+    try { return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }); }
+    catch { return d; }
 };
 </script>
 
@@ -27,70 +37,41 @@ const formatDate = (dateStr) => {
     <AuthenticatedLayout>
         <Head title="Referral Codes" />
 
-        <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-bold tracking-tight text-white">Referral Codes</h1>
-                <p class="text-slate-400 text-sm mt-1">Manage partner and sub-partner attribution referral codes.</p>
-            </div>
-            <div class="flex items-center gap-2">
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-slate-800 text-slate-300 border border-slate-700">
-                    Total: {{ referral_codes.length }}
-                </span>
+        <div class="mb-6">
+            <div class="flex items-center gap-3 mb-1">
+                <div class="w-9 h-9 rounded-xl bg-sky-500 flex items-center justify-center shadow-sm shadow-sky-500/30">
+                    <ShareIcon class="w-5 h-5 text-white" />
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-gray-900 tracking-tight">Referral Codes</h1>
+                    <p class="text-gray-500 text-xs mt-0.5">Manage partner and sub-partner attribution referral codes.</p>
+                </div>
             </div>
         </div>
 
-        <div class="bg-slate-800 rounded-xl border border-slate-700 shadow-xl overflow-hidden">
-            <div v-if="referral_codes.length === 0" class="py-12 text-center text-slate-400 text-sm">
-                <p>No referral codes found.</p>
-            </div>
-
-            <div v-else class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-sm">
-                    <thead>
-                        <tr class="border-b border-slate-700 bg-slate-800/80 text-xs font-semibold uppercase tracking-wider text-slate-400">
-                            <th scope="col" class="px-6 py-3.5">Referral Code</th>
-                            <th scope="col" class="px-6 py-3.5">Main Partner</th>
-                            <th scope="col" class="px-6 py-3.5">Sub-Partner</th>
-                            <th scope="col" class="px-6 py-3.5">Status</th>
-                            <th scope="col" class="px-6 py-3.5">Created</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-700/60">
-                        <tr
-                            v-for="code in referral_codes"
-                            :key="code.id"
-                            class="hover:bg-slate-700/30 transition-colors"
-                        >
-                            <td class="px-6 py-4 font-mono text-xs font-semibold text-indigo-400 whitespace-nowrap">
-                                {{ code.code }}
-                            </td>
-                            <td class="px-6 py-4 text-white whitespace-nowrap">
-                                {{ code.partner?.name || '—' }}
-                            </td>
-                            <td class="px-6 py-4 text-slate-300 whitespace-nowrap">
-                                {{ code.sub_partner?.name || '—' }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span
-                                    v-if="code.is_active"
-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                                >
-                                    Active
-                                </span>
-                                <span
-                                    v-else
-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20"
-                                >
-                                    Inactive
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-xs text-slate-400 whitespace-nowrap">
-                                {{ formatDate(code.created_at) }}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        <DataTable :rows="referral_codes" :columns="columns" empty-message="No referral codes found.">
+            <template #row="{ row }">
+                <td class="px-5 py-3.5 font-mono text-sm font-bold text-sky-600 whitespace-nowrap tracking-wider">
+                    {{ row.code }}
+                </td>
+                <td class="px-5 py-3.5 font-medium text-gray-900 whitespace-nowrap">
+                    {{ row.partner?.name || '—' }}
+                </td>
+                <td class="px-5 py-3.5 text-sm text-gray-600 whitespace-nowrap">
+                    {{ row.sub_partner?.name || '—' }}
+                </td>
+                <td class="px-5 py-3.5 whitespace-nowrap">
+                    <span v-if="row.is_active" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                        Active
+                    </span>
+                    <span v-else class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-600 border border-red-200">
+                        <span class="w-1.5 h-1.5 rounded-full bg-red-400" />
+                        Inactive
+                    </span>
+                </td>
+                <td class="px-5 py-3.5 text-xs text-gray-500 whitespace-nowrap">{{ formatDate(row.created_at) }}</td>
+            </template>
+        </DataTable>
     </AuthenticatedLayout>
 </template>

@@ -18,6 +18,7 @@ use App\Http\Controllers\Renewals\RenewalController;
 use App\Http\Controllers\Reports\ReportController;
 use App\Http\Controllers\Sales\OrderController;
 use App\Http\Controllers\Sales\SaleController;
+use App\Http\Controllers\Settings\SettingsController;
 use App\Http\Controllers\Subscriptions\AutoDebitController;
 use App\Http\Controllers\Subscriptions\SubscriptionController;
 use Illuminate\Support\Facades\Route;
@@ -111,7 +112,6 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::post('/renewals/{renewal}/process', [RenewalController::class, 'process'])->name('renewals.process');
 
     // In-App Notifications
-    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markRead'])->name('notifications.mark-read');
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
 
@@ -127,4 +127,10 @@ Route::middleware(['auth', 'active'])->group(function () {
 
     // Audit History — Admin only (temporary security default) until BC-11-01 resolved
     Route::get('/audit', [AuditController::class, 'index'])->name('audit.index');
+
+    // Partner & Account Settings
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+    Route::post('/settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.profile.update');
+    Route::post('/settings/image', [SettingsController::class, 'uploadImage'])->name('settings.image.upload');
+    Route::post('/settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password.update');
 });

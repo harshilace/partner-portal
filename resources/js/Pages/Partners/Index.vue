@@ -2,12 +2,11 @@
 import { computed } from 'vue';
 import { Head, usePage } from '@inertiajs/vue3';
 import AuthenticatedLayout from '../../Layouts/AuthenticatedLayout.vue';
+import DataTable from '../../Components/Common/DataTable.vue';
+import { UsersIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
-    partners: {
-        type: Array,
-        default: () => [],
-    },
+    partners: { type: Array, default: () => [] },
 });
 
 const page = usePage();
@@ -20,17 +19,46 @@ const subtitle = computed(() =>
         : 'Manage partner organizations, hierarchy, and system relationships.'
 );
 
-const formatDate = (dateStr) => {
-    if (!dateStr) return '—';
-    try {
-        return new Date(dateStr).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-        });
-    } catch {
-        return dateStr;
-    }
+const columns = [
+    { key: 'partner_code', label: 'Code',    sortable: true,  filterable: true },
+    { key: 'name',         label: 'Name',    sortable: true,  filterable: true },
+    {
+        key: 'type',
+        label: 'Type',
+        sortable: true,
+        filterable: true,
+        options: [
+            { label: 'Main', value: 'main' },
+            { label: 'Sub',  value: 'sub' },
+        ],
+    },
+    {
+        key: 'status',
+        label: 'Status',
+        sortable: true,
+        filterable: true,
+        options: [
+            { label: 'Active',   value: 'active' },
+            { label: 'Inactive', value: 'inactive' },
+        ],
+    },
+    { key: 'created_at',   label: 'Created', sortable: true,  filterable: false },
+];
+
+const typeClass = (t) => ({
+    main: 'bg-blue-50 text-blue-700 border-blue-200',
+    sub:  'bg-purple-50 text-purple-700 border-purple-200',
+})[t] ?? 'bg-gray-100 text-gray-600 border-gray-200';
+
+const statusClass = (s) =>
+    s === 'active'
+        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+        : 'bg-red-50 text-red-600 border-red-200';
+
+const formatDate = (d) => {
+    if (!d) return '—';
+    try { return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }); }
+    catch { return d; }
 };
 </script>
 
@@ -38,87 +66,43 @@ const formatDate = (dateStr) => {
     <AuthenticatedLayout>
         <Head :title="title" />
 
-        <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-bold tracking-tight text-white">{{ title }}</h1>
-                <p class="text-slate-400 text-sm mt-1">{{ subtitle }}</p>
-            </div>
-            <div class="flex items-center gap-2">
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-slate-800 text-slate-300 border border-slate-700">
-                    Total: {{ partners.length }}
-                </span>
+        <!-- Page Header -->
+        <div class="mb-6">
+            <div class="flex items-center gap-3 mb-1">
+                <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center shadow-sm shadow-blue-600/30">
+                    <UsersIcon class="w-5 h-5 text-white" />
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-gray-900 tracking-tight">{{ title }}</h1>
+                    <p class="text-gray-500 text-xs mt-0.5">{{ subtitle }}</p>
+                </div>
             </div>
         </div>
 
-        <div class="bg-slate-800 rounded-xl border border-slate-700 shadow-xl overflow-hidden">
-            <div v-if="partners.length === 0" class="py-12 text-center text-slate-400 text-sm">
-                <p>No {{ title.toLowerCase() }} found.</p>
-            </div>
-
-            <div v-else class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-sm">
-                    <thead>
-                        <tr class="border-b border-slate-700 bg-slate-800/80 text-xs font-semibold uppercase tracking-wider text-slate-400">
-                            <th scope="col" class="px-6 py-3.5">Code</th>
-                            <th scope="col" class="px-6 py-3.5">Name</th>
-                            <th scope="col" class="px-6 py-3.5">Type</th>
-                            <th scope="col" class="px-6 py-3.5">Status</th>
-                            <th scope="col" class="px-6 py-3.5">Created</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-700/60">
-                        <tr
-                            v-for="partner in partners"
-                            :key="partner.id"
-                            class="hover:bg-slate-700/30 transition-colors"
-                        >
-                            <td class="px-6 py-4 font-mono text-xs font-medium text-indigo-400 whitespace-nowrap">
-                                {{ partner.partner_code || '—' }}
-                            </td>
-                            <td class="px-6 py-4 font-medium text-white whitespace-nowrap">
-                                {{ partner.name }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span
-                                    v-if="partner.type === 'main'"
-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20"
-                                >
-                                    Main
-                                </span>
-                                <span
-                                    v-else-if="partner.type === 'sub'"
-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20"
-                                >
-                                    Sub
-                                </span>
-                                <span
-                                    v-else
-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-500/10 text-slate-400 border border-slate-500/20"
-                                >
-                                    {{ partner.type || '—' }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span
-                                    v-if="partner.status === 'active'"
-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                                >
-                                    Active
-                                </span>
-                                <span
-                                    v-else
-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20"
-                                >
-                                    {{ partner.status || 'Inactive' }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-xs text-slate-400 whitespace-nowrap">
-                                {{ formatDate(partner.created_at) }}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        <!-- DataTable -->
+        <DataTable :rows="partners" :columns="columns" empty-message="No partners found.">
+            <template #row="{ row }">
+                <td class="px-5 py-3.5 font-mono text-xs font-semibold text-blue-600 whitespace-nowrap">
+                    {{ row.partner_code || '—' }}
+                </td>
+                <td class="px-5 py-3.5 font-medium text-gray-900 whitespace-nowrap">
+                    {{ row.name }}
+                </td>
+                <td class="px-5 py-3.5 whitespace-nowrap">
+                    <span :class="['inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border capitalize', typeClass(row.type)]">
+                        {{ row.type || '—' }}
+                    </span>
+                </td>
+                <td class="px-5 py-3.5 whitespace-nowrap">
+                    <span :class="['inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border capitalize', statusClass(row.status)]">
+                        <span :class="['w-1.5 h-1.5 rounded-full', row.status === 'active' ? 'bg-emerald-500' : 'bg-red-400']" />
+                        {{ row.status || 'Inactive' }}
+                    </span>
+                </td>
+                <td class="px-5 py-3.5 text-xs text-gray-500 whitespace-nowrap">
+                    {{ formatDate(row.created_at) }}
+                </td>
+            </template>
+        </DataTable>
     </AuthenticatedLayout>
 </template>

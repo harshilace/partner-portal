@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import AppSidebar from '../Components/Navigation/AppSidebar.vue';
 import AppTopBar from '../Components/Navigation/AppTopBar.vue';
+import ToastNotification from '../Components/Common/ToastNotification.vue';
 
 const isMobileOpen = ref(false);
 const isCollapsed = ref(false);
@@ -47,11 +48,14 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="min-h-screen bg-slate-950 text-white flex overflow-x-hidden">
+    <div class="min-h-screen bg-slate-50/70 text-gray-800 flex selection:bg-blue-500 selection:text-white">
+        <!-- Global Toast Notification Container -->
+        <ToastNotification />
+
         <!-- Accessible Skip to Main Content link -->
         <a
             href="#main-content"
-            class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-indigo-600 focus:text-white focus:rounded-md focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-white"
+            class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-md focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-white"
         >
             Skip to main content
         </a>
@@ -66,19 +70,18 @@ onUnmounted(() => {
 
         <!-- Main Canvas -->
         <div class="flex-1 flex flex-col min-w-0 min-h-screen">
-            <!-- Compact Top Bar -->
+            <!-- Animated Sticky Top Bar -->
             <AppTopBar @toggle-mobile="toggleMobile" />
 
-            <!-- Page Content -->
-            <main id="main-content" class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 focus:outline-none" tabindex="-1">
+            <!-- Page Content (Uses Full Available Width) -->
+            <main id="main-content" class="flex-1 w-full px-4 sm:px-6 lg:px-8 xl:px-10 py-6 sm:py-8 focus:outline-none" tabindex="-1">
                 <slot />
             </main>
 
-            <!-- Footer -->
-            <footer class="border-t border-slate-800/80 py-4 px-6 text-center text-xs text-slate-500">
-                Partner Portal &bull; Phase 12 UI/UX
+            <!-- Modern SaaS Footer -->
+            <footer class="border-t border-gray-200/60 py-4 px-4 flex items-center justify-center text-xs text-gray-500 font-medium text-center">
+                <span><strong class="font-bold text-gray-900">Partner Portal</strong> &bull; &copy; {{ new Date().getFullYear() }} All rights reserved.</span>
             </footer>
         </div>
     </div>
 </template>
-
